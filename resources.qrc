@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/from mat.svg</file>
+        <file>images/on mat.svg</file>
+        <file>images/win.png</file>
+        <file>images/win_gray.png</file>
+        <file>images/win_hover.png</file>
+        <file>images/win_gray_hover.png</file>
+    </qresource>
+</RCC>
