@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     HalfAndFinalOne3.cpp \
+    competitionsystem.cpp \
     firstround.cpp \
     firstroundandfinals.cpp \
     main.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     HalfAndFinalOne3.h \
+    competitionsystem.h \
     firstround.h \
     firstroundandfinals.h \
     main.h \
