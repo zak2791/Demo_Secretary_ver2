@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QComboBox>
 
-FirstRound::FirstRound(QList<athlete1round> list){
+FirstRound::FirstRound(QList<athlete> list){
     lAthletes = list;
 
     for(int i = 0; i < list.count(); i++){
@@ -83,7 +83,7 @@ void FirstRound::paint(QPainter *painter,
         painter->drawRect(lRectRate.at(i));
         painter->drawText(lRectRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, lAthletes.at(i).rate);
         painter->drawRect(lRectAddRate.at(i));
-        painter->drawText(lRectAddRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, lAthletes.at(i).addRate);
+        painter->drawText(lRectAddRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, lAthletes.at(i).add_rate);
         if(hoverPlaceFlags.at(i))
             painter->fillRect(lRectPlace.at(i), "lightgray");
         else
@@ -122,15 +122,15 @@ void FirstRound::mousePressEvent(QGraphicsSceneMouseEvent* e){
         return;
     }
     if(rSortRate.contains(x, y)){
-        std::sort(lAthletes.begin(), lAthletes.end(), [](const athlete1round &a1,
-                                                     const athlete1round &a2){
+        std::sort(lAthletes.begin(), lAthletes.end(), [](const athlete &a1,
+                                                     const athlete &a2){
             return a1.rate > a2.rate;
         });
         return;
     }
     if(rSortPlace.contains(x, y)){
-        std::sort(lAthletes.begin(), lAthletes.end(), [](const athlete1round &a1,
-                                                         const athlete1round &a2){
+        std::sort(lAthletes.begin(), lAthletes.end(), [](const athlete &a1,
+                                                         const athlete &a2){
             if(a1.place == "" && a2.place == "")
                 return true;
             if(a1.place == "")

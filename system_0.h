@@ -10,11 +10,11 @@
 ///Система проведения - общий круг, полуфинал, финал и 2 третьих места, ///
 ///код системы проведения - 0                                           ///
 ///////////////////////////////////////////////////////////////////////////
-class CommonRoundHalfFinalTwoThird : public CompetitionSystem
+class System_0 : public CompetitionSystem
 {
     Q_OBJECT
 public:
-    CommonRoundHalfFinalTwoThird(int, QList<athlete1round>);
+    System_0(int, QList<athlete>);
 
 public slots:
     virtual void setResult(int, int, QList<QString>);
@@ -30,7 +30,7 @@ private:
 
 
     virtual void sendOnMat(int, int, QList<QString>);
-    QList<athlete1round> lAthlete;
+    QList<athlete> lAthlete;
 };
 
 #endif // SYSTEM_0_H

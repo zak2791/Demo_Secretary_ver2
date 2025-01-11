@@ -10,11 +10,11 @@ class FirstRound : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    FirstRound(QList<athlete1round> = {});
+    FirstRound(QList<athlete> = {});
     int getHeight(void);
 
 private:
-    QList<athlete1round> lAthletes;
+    QList<athlete> lAthletes;
     QRectF boundingRect(void) const override;
     void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 

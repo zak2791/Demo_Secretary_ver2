@@ -13,11 +13,15 @@ class ItemHalfAndFinalOne3 : public QGraphicsObject
 {
     Q_OBJECT
 public:
+    // ItemHalfAndFinalOne3(QList<athlete> = {},   //список финалистов согласно порядка номеров жеребьёвки (1, 3, 2, 4)
+    //                      QList<rates> = {},     //оценки (8 оценок - 4 полуфиналиста, 2 финалиста,
+    //                                             //2 за третье место (порядок сверху вниз))
+    //                      QList<int> = {},       //флаги победителей (0 - никто, 1 - верхний, 2 - нижний) полуфиналов, финала и за третье место
+    //                      QList<bool> = {});     //флаги отправки на ковер полуфиналов и финалов (false - не отправлен, true - отправлен)
+
     ItemHalfAndFinalOne3(QList<athlete> = {},   //список финалистов согласно порядка номеров жеребьёвки (1, 3, 2, 4)
-                         QList<rates> = {},     //оценки (8 оценок - 4 полуфиналиста, 2 финалиста,
-                                                //2 за третье место (порядок сверху вниз))
-                         QList<int> = {},       //флаги победителей (0 - никто, 1 - верхний, 2 - нижний) полуфиналов, финала и за третье место
-                         QList<bool> = {});     //флаги отправки на ковер полуфиналов и финалов (false - не отправлен, true - отправлен)
+                         final_0 = final_0()    //оценки (8 оценок - 4 полуфиналиста, 2 финалиста,
+                         );
 
     void setAthletes(QList<athlete>);           //установить финалистов
     void setAthlete(int, athlete);              //установить финалиста
@@ -27,6 +31,12 @@ public:
 private:
     QRectF boundingRect(void) const override;
     void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
+
+    final_0 data_final_0;
+    athlete athlete1;
+    athlete athlete3;
+    athlete athlete2;
+    athlete athlete4;
 
     QList<QString> names;
     //QList<QString> names;
@@ -46,26 +56,26 @@ private:
     QString range4 = "";
 
     //Оценки полуфинала, согласно номерам по жеребьевке
-    QString rate1 = "";
-    QString rate3 = "";
-    QString rate2 = "";
-    QString rate4 = "";
-    QString addRate1 = "";
-    QString addRate3 = "";
-    QString addRate2 = "";
-    QString addRate4 = "";
+    // QString rate1 = "";
+    // QString rate3 = "";
+    // QString rate2 = "";
+    // QString rate4 = "";
+    // QString addRate1 = "";
+    // QString addRate3 = "";
+    // QString addRate2 = "";
+    // QString addRate4 = "";
 
     //Оценки финала
-    QString rateFin1 = "";
-    QString rateFin2 = "";
-    QString addRateFin1 = "";
-    QString addRateFin2 = "";
+    // QString rateFin1 = "";
+    // QString rateFin2 = "";
+    // QString addRateFin1 = "";
+    // QString addRateFin2 = "";
 
     //Оценки за третье место
-    QString rateThird1 = "";
-    QString rateThird2 = "";
-    QString addRateThird1 = "";
-    QString addRateThird2 = "";
+    // QString rateThird1 = "";
+    // QString rateThird2 = "";
+    // QString addRateThird1 = "";
+    // QString addRateThird2 = "";
 
     /*Номера по жеребьёвке в сетке: */
     QString drawFin1 = "";      //первый финалист
@@ -91,9 +101,9 @@ private:
     bool flagHoverWinThird2 = false;
 
     /*Флаги отправки категорий на ковер*/
-    bool flagOnMatHalf = false;
+    //bool flagOnMatHalf = false;
     //bool flagOnMatHalf2 = false;
-    bool flagOnMatFinal = false;
+    //bool flagOnMatFinal = false;
     //bool flagOnMatThird = false;
 
     /*Флаги наведения мыши на номера жеребьевки полуфиналов и финалов*/
@@ -101,16 +111,16 @@ private:
     bool flagHoverFinal = false;
 
     /*Победители в первом полуфинале: */
-    int winnerHalfOne = 0;  //0 - нет, 1 - верхний (1), 2 - нижний (3)
+    //int winnerHalfOne = 0;  //0 - нет, 1 - верхний (1), 2 - нижний (3)
 
     /*Победители во втором полуфинале: */
-    int winnerHalfTwo = 0;  //0 - нет, 1 - верхний (2), 2 - нижний (4)
+    //int winnerHalfTwo = 0;  //0 - нет, 1 - верхний (2), 2 - нижний (4)
 
     /*Победители в финале: */
-    int winnerFinal = 0;    //0 - нет, 1 - верхний, 2 - нижний
+    //int winnerFinal = 0;    //0 - нет, 1 - верхний, 2 - нижний
 
     /*Победители в бою за третье место: */
-    int winnerThird = 0;    //0 - нет, 1 - верхний, 2 - нижний
+    //int winnerThird = 0;    //0 - нет, 1 - верхний, 2 - нижний
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent*) override;
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent*) override;

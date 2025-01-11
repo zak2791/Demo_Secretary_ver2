@@ -3,51 +3,55 @@
 #include <QPainter>
 
 ItemHalfAndFinalOne3::ItemHalfAndFinalOne3(QList<athlete> aList,
-                                           QList<rates> rList,
-                                           QList<int> winners,
-                                           QList<bool> onmat) {
+                                           final_0 data
+                                           ) {
 
-    setAthletes(aList);
-    setRates(rList);
+    //setAthletes(aList);
+    //setRates(rList);
+    if(aList.count() == 4){
+        athlete1 = aList.at(0);
+        athlete3 = aList.at(1);
+        athlete2 = aList.at(2);
+        athlete4 = aList.at(3);
+    }
+    qDebug()<<athlete1.id;
+    data_final_0 = data;
 
-    if(winners.count() == 4){
-        winnerHalfOne = winners.at(0);
-        if(winnerHalfOne == 1){
-            drawFin1 = "1";
-            drawThird1 = "3";
-        }else if(winnerHalfOne == 2){
-            drawFin1 = "3";
-            drawThird1 = "1";
-        }
-
-        winnerHalfTwo = winners.at(1);
-        if(winnerHalfTwo == 1){
-            drawFin2 = "2";
-            drawThird2 = "4";
-        }else if(winnerHalfTwo == 2){
-            drawFin2 = "4";
-            drawThird2 = "2";
-        }
-
-        winnerFinal   = winners.at(2);
-        if(winnerFinal == 1){
-            drawFinal = drawFin1;
-        }else if(winnerFinal == 2){
-            drawFinal = drawFin2;
-        }
-
-        winnerThird   = winners.at(3);
-        if(winnerThird == 1){
-            drawThird = drawThird1;
-        }else if(winnerThird == 2){
-            drawThird = drawThird2;
-        }
+    //winnerHalfOne = data_final_0.win_1;
+    if(data_final_0.win_1 == 1){
+        drawFin1 = "1";
+        drawThird1 = "3";
+    }else if(data_final_0.win_1 == 2){
+        drawFin1 = "3";
+        drawThird1 = "1";
     }
 
-    if(onmat.count() == 2){
-        flagOnMatHalf  = onmat.at(0);
-        flagOnMatFinal = onmat.at(1);
+    //winnerHalfTwo = data_final_0.win_2;
+    if(data_final_0.win_2 == 1){
+        drawFin2 = "2";
+        drawThird2 = "4";
+    }else if(data_final_0.win_2 == 2){
+        drawFin2 = "4";
+        drawThird2 = "2";
     }
+
+    //winnerFinal = data_final_0.win_final;
+    if(data_final_0.win_final == 1){
+        drawFinal = drawFin1;
+    }else if(data_final_0.win_final == 2){
+        drawFinal = drawFin2;
+    }
+
+    //winnerThird = data_final_0.wit_third;
+    if(data_final_0.win_third == 1){
+        drawThird = drawThird1;
+    }else if(data_final_0.win_third == 2){
+        drawThird = drawThird2;
+    }
+
+    //flagOnMatHalf  = data_final_0.flag_on_mat_half;
+    //flagOnMatFinal = data_final_0.flag_on_mat_final;
+
 
     setAcceptHoverEvents(true);
 
@@ -69,7 +73,7 @@ void ItemHalfAndFinalOne3::paint(QPainter *painter,
                                  const QStyleOptionGraphicsItem*,
                                  QWidget*)
 {
-    if(flagOnMatHalf){
+    if(data_final_0.flag_on_mat_half){
         painter->fillRect(rectHalf1, "gray");
         painter->fillRect(rectHalf3, "gray");
         painter->fillRect(rectHalf2, "gray");
@@ -90,7 +94,7 @@ void ItemHalfAndFinalOne3::paint(QPainter *painter,
         }
     }
 
-    if(flagOnMatFinal){
+    if(data_final_0.flag_on_mat_final){
         painter->fillRect(rectFin1,    "gray");
         painter->fillRect(rectFin2,    "gray");
         painter->fillRect(rectThird1, "gray");
@@ -136,40 +140,40 @@ void ItemHalfAndFinalOne3::paint(QPainter *painter,
     painter->drawText(QRect(0, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, "2");
     painter->drawText(QRect(0, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, "4");
 
-    painter->drawText(QRect(40 + 3,   0, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, name1);
-    painter->drawText(QRect(40 + 3,  80, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, name3);
-    painter->drawText(QRect(40 + 3, 160, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, name2);
-    painter->drawText(QRect(40 + 3, 240, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, name4);
+    painter->drawText(QRect(40 + 3,   0, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete1.name);
+    painter->drawText(QRect(40 + 3,  80, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete3.name);
+    painter->drawText(QRect(40 + 3, 160, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete2.name);
+    painter->drawText(QRect(40 + 3, 240, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete4.name);
 
-    painter->drawText(QRect(140 + 3,   0, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, team1);
-    painter->drawText(QRect(140 + 3,  80, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, team3);
-    painter->drawText(QRect(140 + 3, 160, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, team2);
-    painter->drawText(QRect(140 + 3, 240, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, team4);
+    painter->drawText(QRect(140 + 3,   0, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete1.team);
+    painter->drawText(QRect(140 + 3,  80, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete3.team);
+    painter->drawText(QRect(140 + 3, 160, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete2.team);
+    painter->drawText(QRect(140 + 3, 240, 100, 40), Qt::AlignVCenter | Qt::AlignLeft, athlete4.team);
 
-    painter->drawText(QRect(240,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, range1);
-    painter->drawText(QRect(240,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, range3);
-    painter->drawText(QRect(240, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, range2);
-    painter->drawText(QRect(240, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, range4);
+    painter->drawText(QRect(240,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, athlete1.range);
+    painter->drawText(QRect(240,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, athlete3.range);
+    painter->drawText(QRect(240, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, athlete2.range);
+    painter->drawText(QRect(240, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, athlete4.range);
 
-    painter->drawText(QRect(280,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rate1);
-    painter->drawText(QRect(280,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rate3);
-    painter->drawText(QRect(280, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rate2);
-    painter->drawText(QRect(280, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rate4);
+    painter->drawText(QRect(280,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate1);
+    painter->drawText(QRect(280,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate2);
+    painter->drawText(QRect(280, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate3);
+    painter->drawText(QRect(280, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate4);
 
-    painter->drawText(QRect(320,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRate1);
-    painter->drawText(QRect(320,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRate3);
-    painter->drawText(QRect(320, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRate2);
-    painter->drawText(QRect(320, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRate4);
+    painter->drawText(QRect(320,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate1);
+    painter->drawText(QRect(320,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate2);
+    painter->drawText(QRect(320, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate3);
+    painter->drawText(QRect(320, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate4);
 
-    painter->drawText(QRect(440,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rateFin1);
-    painter->drawText(QRect(440, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rateFin2);
-    painter->drawText(QRect(440, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rateThird1);
-    painter->drawText(QRect(440, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, rateThird2);
+    painter->drawText(QRect(440,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_fin1);
+    painter->drawText(QRect(440, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_fin2);
+    painter->drawText(QRect(440, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_third1);
+    painter->drawText(QRect(440, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_third2);
 
-    painter->drawText(QRect(480,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRateFin1);
-    painter->drawText(QRect(480, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRateFin2);
-    painter->drawText(QRect(480, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRateThird1);
-    painter->drawText(QRect(480, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, addRateThird2);
+    painter->drawText(QRect(480,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_fin1);
+    painter->drawText(QRect(480, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_fin2);
+    painter->drawText(QRect(480, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_third1);
+    painter->drawText(QRect(480, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_third2);
 
     painter->drawText(rectFin1, Qt::AlignVCenter | Qt::AlignHCenter, drawFin1);
 
@@ -188,113 +192,113 @@ void ItemHalfAndFinalOne3::paint(QPainter *painter,
     painter->drawText(QRect(600 + 3, 360,  80, 40), Qt::AlignVCenter | Qt::AlignLeft, "3 место");
 
     if(flagHoverWin1){
-        if(winnerHalfOne == 0)
+        if(data_final_0.win_1 == 0)
             painter->drawImage(rectWinHalf1, *win_gray_hover);
-        else if(winnerHalfOne == 1)
+        else if(data_final_0.win_1 == 1)
             painter->drawImage(rectWinHalf1, *win_hover);
         else
             painter->drawImage(rectWinHalf1, *win_gray);
     }
     else{
-        if(winnerHalfOne == 1)
+        if(data_final_0.win_1 == 1)
             painter->drawImage(rectWinHalf1, *win);
         else
             painter->drawImage(rectWinHalf1, *win_gray);
     }
     if(flagHoverWin2){
-        if(winnerHalfOne == 0)
+        if(data_final_0.win_1 == 0)
             painter->drawImage(rectWinHalf3, *win_gray_hover);
-        else if(winnerHalfOne == 2)
+        else if(data_final_0.win_1 == 2)
             painter->drawImage(rectWinHalf3, *win_hover);
         else
             painter->drawImage(rectWinHalf3, *win_gray);
     }
     else{
-        if(winnerHalfOne == 2)
+        if(data_final_0.win_1 == 2)
             painter->drawImage(rectWinHalf3, *win);
         else
             painter->drawImage(rectWinHalf3, *win_gray);
     }
     if(flagHoverWin3){
-        if(winnerHalfTwo == 0)
+        if(data_final_0.win_2 == 0)
             painter->drawImage(rectWinHalf2, *win_gray_hover);
-        else if(winnerHalfTwo == 1)
+        else if(data_final_0.win_2 == 1)
             painter->drawImage(rectWinHalf2, *win_hover);
         else
             painter->drawImage(rectWinHalf2, *win_gray);
     }
     else{
-        if(winnerHalfTwo == 1)
+        if(data_final_0.win_2 == 1)
             painter->drawImage(rectWinHalf2, *win);
         else
             painter->drawImage(rectWinHalf2, *win_gray);
     }
     if(flagHoverWin4){
-        if(winnerHalfTwo == 0)
+        if(data_final_0.win_2 == 0)
             painter->drawImage(rectWinHalf4, *win_gray_hover);
-        else if(winnerHalfTwo == 2)
+        else if(data_final_0.win_2 == 2)
             painter->drawImage(rectWinHalf4, *win_hover);
         else
             painter->drawImage(rectWinHalf4, *win_gray);
     }
     else{
-        if(winnerHalfTwo == 2)
+        if(data_final_0.win_2 == 2)
             painter->drawImage(rectWinHalf4, *win);
         else
             painter->drawImage(rectWinHalf4, *win_gray);
     }
     if(flagHoverWinHalf1){
-        if(winnerFinal == 0)
+        if(data_final_0.win_final == 0)
             painter->drawImage(rectWinFin1, *win_gray_hover);
-        else if(winnerFinal == 1)
+        else if(data_final_0.win_final == 1)
             painter->drawImage(rectWinFin1, *win_hover);
         else
             painter->drawImage(rectWinFin1, *win_gray);
     }
     else{
-        if(winnerFinal == 1)
+        if(data_final_0.win_final == 1)
             painter->drawImage(rectWinFin1, *win);
         else
             painter->drawImage(rectWinFin1, *win_gray);
     }
     if(flagHoverWinHalf2){
-        if(winnerFinal == 0)
+        if(data_final_0.win_final == 0)
             painter->drawImage(rectWinFin2, *win_gray_hover);
-        else if(winnerFinal == 2)
+        else if(data_final_0.win_final == 2)
             painter->drawImage(rectWinFin2, *win_hover);
         else
             painter->drawImage(rectWinFin2, *win_gray);
     }
     else{
-        if(winnerFinal == 2)
+        if(data_final_0.win_final == 2)
             painter->drawImage(rectWinFin2, *win);
         else
             painter->drawImage(rectWinFin2, *win_gray);
     }
     if(flagHoverWinThird1){
-        if(winnerThird == 0)
+        if(data_final_0.win_third == 0)
             painter->drawImage(rectWinThird1, *win_gray_hover);
-        else if(winnerThird == 1)
+        else if(data_final_0.win_third == 1)
             painter->drawImage(rectWinThird1, *win_hover);
         else
             painter->drawImage(rectWinThird1, *win_gray);
     }
     else{
-        if(winnerThird == 1)
+        if(data_final_0.win_third == 1)
             painter->drawImage(rectWinThird1, *win);
         else
             painter->drawImage(rectWinThird1, *win_gray);
     }
     if(flagHoverWinThird2){
-        if(winnerThird == 0)
+        if(data_final_0.win_third == 0)
             painter->drawImage(rectWinThird2, *win_gray_hover);
-        else if(winnerThird == 2)
+        else if(data_final_0.win_third == 2)
             painter->drawImage(rectWinThird2, *win_hover);
         else
             painter->drawImage(rectWinThird2, *win_gray);
     }
     else{
-        if(winnerThird == 2)
+        if(data_final_0.win_third == 2)
             painter->drawImage(rectWinThird2, *win);
         else
             painter->drawImage(rectWinThird2, *win_gray);
@@ -364,32 +368,32 @@ void ItemHalfAndFinalOne3::setAthlete(int draw, athlete athl)
 
 void ItemHalfAndFinalOne3::setRates(QList<rates> rList)
 {
-    if(rList.count() == 8){
-        rate1           = rList.at(0).rate;
-        addRate1        = rList.at(0).addRate;
-        rate3           = rList.at(1).rate;
-        addRate3        = rList.at(1).addRate;
-        rate2           = rList.at(2).rate;
-        addRate2        = rList.at(2).addRate;
-        rate4           = rList.at(3).rate;
-        addRate4        = rList.at(3).addRate;
-        rateFin1        = rList.at(4).rate;
-        addRateFin1     = rList.at(4).addRate;
-        rateFin2        = rList.at(5).rate;
-        addRateFin2     = rList.at(5).addRate;
-        rateThird1      = rList.at(6).rate;
-        addRateThird1   = rList.at(6).addRate;
-        rateThird2      = rList.at(7).rate;
-        addRateThird2   = rList.at(7).addRate;
-    }
+    // if(rList.count() == 8){
+    //     rate1           = rList.at(0).rate;
+    //     addRate1        = rList.at(0).addRate;
+    //     rate3           = rList.at(1).rate;
+    //     addRate3        = rList.at(1).addRate;
+    //     rate2           = rList.at(2).rate;
+    //     addRate2        = rList.at(2).addRate;
+    //     rate4           = rList.at(3).rate;
+    //     addRate4        = rList.at(3).addRate;
+    //     rateFin1        = rList.at(4).rate;
+    //     addRateFin1     = rList.at(4).addRate;
+    //     rateFin2        = rList.at(5).rate;
+    //     addRateFin2     = rList.at(5).addRate;
+    //     rateThird1      = rList.at(6).rate;
+    //     addRateThird1   = rList.at(6).addRate;
+    //     rateThird2      = rList.at(7).rate;
+    //     addRateThird2   = rList.at(7).addRate;
+    // }
 }
 
 void ItemHalfAndFinalOne3::cancelSendOnMat(int onmat)
 {
     if(onmat == 0)
-        flagOnMatHalf  = false;
+        data_final_0.flag_on_mat_half  = false;
     else
-        flagOnMatFinal = false;
+        data_final_0.flag_on_mat_final = false;
 }
 
 void ItemHalfAndFinalOne3::mousePressEvent(QGraphicsSceneMouseEvent* e)
@@ -399,123 +403,123 @@ void ItemHalfAndFinalOne3::mousePressEvent(QGraphicsSceneMouseEvent* e)
 
     /*Выбор победителей*/
     if(rectWinHalf1.contains(x, y)){
-        if(winnerHalfOne == 0){
-            winnerHalfOne = 1;
+        if(data_final_0.win_1 == 0){
+            data_final_0.win_1 = 1;
             drawFin1 = "1";
             drawThird1 = "3";
             emit sigPressWinner(0, true);
         }
-        else if (winnerHalfOne == 1){
-            winnerHalfOne = 0;
+        else if (data_final_0.win_1 == 1){
+            data_final_0.win_1 = 0;
             drawFin1 = "";
             drawThird1 = "";
             emit sigPressWinner(0, false);
         }
     }
     else if(rectWinHalf3.contains(x, y)){
-        if(winnerHalfOne == 0){
-            winnerHalfOne = 2;
+        if(data_final_0.win_1 == 0){
+            data_final_0.win_1 = 2;
             drawFin1 = "3";
             drawThird1 = "1";
             emit sigPressWinner(1, true);
         }
-        else if (winnerHalfOne == 2){
-            winnerHalfOne = 0;
+        else if (data_final_0.win_1 == 2){
+            data_final_0.win_1 = 0;
             drawFin1 = "";
             drawThird1 = "";
             emit sigPressWinner(1, false);
         }
     }
     else if(rectWinHalf2.contains(x, y)){
-        if(winnerHalfTwo == 0){
-            winnerHalfTwo = 1;
+        if(data_final_0.win_2 == 0){
+            data_final_0.win_2 = 1;
             drawFin2 = "2";
             drawThird2 = "4";
             emit sigPressWinner(2, true);
         }
-        else if (winnerHalfTwo == 1){
-            winnerHalfTwo = 0;
+        else if (data_final_0.win_2 == 1){
+            data_final_0.win_2 = 0;
             drawFin2 = "";
             drawThird2 = "";
             emit sigPressWinner(2, false);
         }
     }
     else if(rectWinHalf4.contains(x, y)){
-        if(winnerHalfTwo == 0){
-            winnerHalfTwo = 2;
+        if(data_final_0.win_2 == 0){
+            data_final_0.win_2 = 2;
             drawFin2 = "4";
             drawThird2 = "2";
             emit sigPressWinner(3, true);
         }
-        else if (winnerHalfTwo == 2){
-            winnerHalfTwo = 0;
+        else if (data_final_0.win_2 == 2){
+            data_final_0.win_2 = 0;
             drawFin2 = "";
             drawThird2 = "";
             emit sigPressWinner(3, false);
         }
     }
     else if(rectWinFin1.contains(x, y)){
-        if(winnerFinal == 0){
-            winnerFinal = 1;
+        if(data_final_0.win_final == 0){
+            data_final_0.win_final = 1;
             //drawFinal = drawFin1;
             emit sigPressWinner(4, true);
         }
-        else if (winnerFinal == 1){
-            winnerFinal = 0;
+        else if (data_final_0.win_final == 1){
+            data_final_0.win_final = 0;
             //drawFinal = "";
             emit sigPressWinner(4, false);
         }
     }
     else if(rectWinFin2.contains(x, y)){
-        if(winnerFinal == 0){
-            winnerFinal = 2;
+        if(data_final_0.win_final == 0){
+            data_final_0.win_final = 2;
             //drawFinal = drawFin2;
             emit sigPressWinner(5, true);
         }
-        else if (winnerFinal == 2){
-            winnerFinal = 0;
+        else if (data_final_0.win_final == 2){
+            data_final_0.win_final = 0;
             //drawFinal = "";
             emit sigPressWinner(5, false);
         }
     }
     else if(rectWinThird1.contains(x, y)){
-        if(winnerThird == 0){
-            winnerThird = 1;
+        if(data_final_0.win_third == 0){
+            data_final_0.win_third = 1;
             //drawThird = drawThird1;
             emit sigPressWinner(6, true);
         }
-        else if (winnerThird == 1){
-            winnerThird = 0;
+        else if (data_final_0.win_third == 1){
+            data_final_0.win_third = 0;
             //drawThird = "";
             emit sigPressWinner(6, false);
         }
     }
     else if(rectWinThird2.contains(x, y)){
-        if(winnerThird == 0){
-            winnerThird = 2;
+        if(data_final_0.win_third == 0){
+            data_final_0.win_third = 2;
             //drawThird = drawThird2;
             emit sigPressWinner(7, true);
         }
-        else if (winnerThird == 2){
-            winnerThird = 0;
+        else if (data_final_0.win_third == 2){
+            data_final_0.win_third = 0;
             //drawThird = "";
             emit sigPressWinner(7, false);
         }
     }
 
-    if(winnerFinal == 1){
+    if(data_final_0.win_final == 1){
         drawFinal = drawFin1;
     }
-    else if(winnerFinal == 2){
+    else if(data_final_0.win_final == 2){
         drawFinal = drawFin2;
     }
     else{
         drawFinal = "";
     }
 
-    if(winnerThird == 1)
+    if(data_final_0.win_third == 1)
         drawThird = drawThird1;
-    else if(winnerFinal == 2)
+    else if(data_final_0.win_third == 2)
         drawThird = drawThird2;
     else
         drawThird = "";
@@ -523,13 +527,13 @@ void ItemHalfAndFinalOne3::mousePressEvent(QGraphicsSceneMouseEvent* e)
     /*Отправка на ковер*/
     if(rectHalf1.contains(x, y) || rectHalf3.contains(x, y) ||
         rectHalf2.contains(x, y) || rectHalf4.contains(x, y)){
-        flagOnMatHalf = true;
+        data_final_0.flag_on_mat_half = true;
         emit sigSendOnMat(0);
     }
 
     if(rectFin1.contains(x, y) || rectFin2.contains(x, y) ||
         rectThird1.contains(x, y) || rectThird2.contains(x, y)){
-        flagOnMatFinal = true;
+        data_final_0.flag_on_mat_final = true;
         emit sigSendOnMat(1);
     }
 }
