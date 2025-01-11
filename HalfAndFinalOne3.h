@@ -20,6 +20,7 @@ public:
                          QList<bool> = {});     //флаги отправки на ковер полуфиналов и финалов (false - не отправлен, true - отправлен)
 
     void setAthletes(QList<athlete>);           //установить финалистов
+    void setAthlete(int, athlete);              //установить финалиста
     void setRates(QList<rates>);                //установить оценки
     void cancelSendOnMat(int);                  //отмена отправки на ковер, 0 - отмена полуфиналов, 1 - отмена финалов
 

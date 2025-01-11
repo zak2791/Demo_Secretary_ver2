@@ -12,17 +12,17 @@ SOURCES += \
     HalfAndFinalOne3.cpp \
     competitionsystem.cpp \
     firstround.cpp \
-    firstroundandfinals.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    system_0.cpp
 
 HEADERS += \
     HalfAndFinalOne3.h \
     competitionsystem.h \
     firstround.h \
-    firstroundandfinals.h \
     main.h \
-    mainwindow.h
+    mainwindow.h \
+    system_0.h
 
 FORMS += \
     mainwindow.ui

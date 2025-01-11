@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QComboBox>
 
-FirstRound::FirstRound(QList<athlete1round> list) {
+FirstRound::FirstRound(QList<athlete1round> list){
     lAthletes = list;
 
     for(int i = 0; i < list.count(); i++){
@@ -116,6 +116,7 @@ void FirstRound::mousePressEvent(QGraphicsSceneMouseEvent* e){
             }
             lAthletes[index].place = act->text();
             currentListPlaces.append(act->text());
+            emit sigPlace(lAthletes[index].id, lAthletes[index].place);
             update();
         }
         return;

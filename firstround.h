@@ -41,6 +41,9 @@ private:
 
     QList<bool> hoverPlaceFlags; //список флагов наведения курсора на ячейку выбора места
 
+signals:
+    void sigPlace(int, QString);
+
 };
 
 #endif // FIRSTROUND_H

@@ -330,6 +330,38 @@ void ItemHalfAndFinalOne3::setAthletes(QList<athlete> aList)
     }
 }
 
+void ItemHalfAndFinalOne3::setAthlete(int draw, athlete athl)
+{
+    if(draw == 1){
+        name1 = athl.name.simplified();
+        name1 = name1.replace(name1.indexOf(" "), 1, "\n");
+        team1 = athl.team;
+        team1 = team1.replace(team1.indexOf(" "), 1, "\n");
+        range1 = athl.range;
+    }
+    else if(draw == 2){
+        name2 = athl.name.simplified();
+        name2 = name2.replace(name2.indexOf(" "), 1, "\n");
+        team2 = athl.team;
+        team2 = team2.replace(team2.indexOf(" "), 1, "\n");
+        range2 = athl.range;
+    }
+    else if(draw == 3){
+        name3 = athl.name.simplified();
+        name3 = name3.replace(name3.indexOf(" "), 1, "\n");
+        team3 = athl.team;
+        team3 = team3.replace(team3.indexOf(" "), 1, "\n");
+        range3 = athl.range;
+    }
+    else{
+        name4 = athl.name.simplified();
+        name4 = name4.replace(name4.indexOf(" "), 1, "\n");
+        team4 = athl.team;
+        team4 = team4.replace(team4.indexOf(" "), 1, "\n");
+        range4 = athl.range;
+    }
+}
+
 void ItemHalfAndFinalOne3::setRates(QList<rates> rList)
 {
     if(rList.count() == 8){

@@ -19,13 +19,14 @@ struct rates
 };
 
 struct athlete1round{
-    athlete1round(QString n, QString t, QString rng, QString r, QString a,  QString p)
+    athlete1round(QString n, QString t, QString rng, QString r, QString a,  QString p, int i)
     {name = n;
      team = t;
      range = rng;
      rate = r;
      addRate = a;
      place = p;
+     id = i;
     }
 
     QString name;
@@ -34,6 +35,7 @@ struct athlete1round{
     QString rate;
     QString addRate;
     QString place;
+    int id;
 
     bool operator<(const athlete1round& obj){
         return place < obj.place;

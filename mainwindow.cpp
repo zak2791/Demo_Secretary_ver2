@@ -1,15 +1,19 @@
 #include "mainwindow.h"
+#include "system_0.h"
 #include "ui_mainwindow.h"
 
-#include "HalfAndFinalOne3.h"
-#include "firstround.h"
+//#include "HalfAndFinalOne3.h"
+//#include "firstround.h"
+#include "main.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    scene = new QGraphicsScene;
+    //scene = new QGraphicsScene;
+
+
     QList<athlete> la;
     la.append(athlete("Иванов Иван", "Брянская область", "КМС"));
     la.append(athlete("Петров Петр", "Брянская область", "КМС"));
@@ -27,21 +31,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     QList<athlete1round> lfr;
 
-    lfr.append(athlete1round("Иванов Иван", "Брянская область", "КМС", "150.0", "1(10)", ""));
-    lfr.append(athlete1round("Кузнецов Глеб", "Брянская область", "МС", "140.0", "1(10)", ""));
-    lfr.append(athlete1round("Сафронов Иван", "Брянская область", "1", "140.0", "1(10)", ""));
-    lfr.append(athlete1round("Перепелка Семен", "Брянская область", "1", "150.5", "1(10)", ""));
-    lfr.append(athlete1round("Круглов Дмитрий", "Брянская область", "КМС", "140.0", "1(10)", ""));
+    lfr.append(athlete1round("Иванов Иван", "Брянская область", "КМС", "150.0", "1(10)", "", 0));
+    lfr.append(athlete1round("Кузнецов Глеб", "Брянская область", "МС", "140.0", "1(10)", "", 1));
+    lfr.append(athlete1round("Сафронов Иван", "Брянская область", "1", "140.0", "1(10)", "", 2));
+    lfr.append(athlete1round("Перепелка Семен", "Брянская область", "1", "150.5", "1(10)", "", 3));
+    lfr.append(athlete1round("Круглов Дмитрий", "Брянская область", "КМС", "140.0", "1(10)", "", 4));
 
     //qDebug()<<"1";
-    FirstRound* fRound = new FirstRound(lfr);
+    //FirstRound* fRound = new FirstRound(lfr);
     //qDebug()<<"2";
 
-    ItemHalfAndFinalOne3* item = new ItemHalfAndFinalOne3(la, lr, QList({1, 2, 0, 1}), QList({true, false}));
-    scene->addItem(fRound);
-    scene->addItem(item);
-    item->moveBy(0, fRound->getHeight() + 80);
+    //ItemHalfAndFinalOne3* item = new ItemHalfAndFinalOne3(la, lr, QList({1, 2, 0, 1}), QList({true, false}));
+    //scene->addItem(fRound);
+    //scene->addItem(item);
+    //item->moveBy(0, fRound->getHeight() + 80);
     //scene->setSceneRect(0,0,300,300);
+    CommonRoundHalfFinalTwoThird* scene = new CommonRoundHalfFinalTwoThird(0, lfr);
     ui->gViewMain->setScene(scene);
     //ui->gViewMain->scene()->setSceneRect(QRectF(QPointF(),ui->gViewMain->size()));
     //ui->gViewMain->centerOn(-100, -100);
