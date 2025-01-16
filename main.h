@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include <QString>
+#include <QJsonObject>
 
 struct athlete
 {
@@ -36,9 +37,10 @@ struct athlete
 
 struct rates
 {
-    rates(QString r, QString ar) {rate = r; addRate = ar;}
+    rates(int _id, QString r, QString ar) {id = _id; rate = r; add_rate = ar;}
+    int id;
     QString rate;
-    QString addRate;
+    QString add_rate;
 };
 
 ///////////////////////////////////////////////////////////////////
@@ -119,5 +121,36 @@ struct final_0
     bool flag_on_mat_final;
 };
 
+
+
+// QJsonObject jSystem_0_obj(){
+//     QJsonObject jObj = QJsonObject{
+//         {"win_1", 0},
+//         {"win_2", 0},
+//         {"win_final", 0},
+//         {"win_third", 0},
+//         {"rate1", 0.0},
+//         {"rate2", 0.0},
+//         {"rate3", 0.0},
+//         {"rate4", 0.0},
+//         {"add_rate1", ""},
+//         {"add_rate2", ""},
+//         {"add_rate3", ""},
+//         {"add_rate4", ""},
+//         {"rate_fin1", 0.0},
+//         {"rate_fin2", 0.0},
+//         {"rate_third1", 0.0},
+//         {"rate_third2", 0.0},
+//         {"add_rate_fin1", ""},
+//         {"add_rate_fin2", ""},
+//         {"add_rate_third1", ""},
+//         {"add_rate_third2", ""},
+//         {"flag_on_mat_half", false},
+//         {"flag_on_mat_final", false},
+//     };
+//     return jObj;
+// }
+
+Q_DECLARE_METATYPE(final_0)
 
 #endif // MAIN_H

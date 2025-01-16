@@ -9,20 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    HalfAndFinalOne3.cpp \
     competitionsystem.cpp \
-    firstround.cpp \
     main.cpp \
     mainwindow.cpp \
-    system_0.cpp
+    system_0.cpp \
+    system_0_common.cpp \
+    system_0_final.cpp
 
 HEADERS += \
-    HalfAndFinalOne3.h \
     competitionsystem.h \
-    firstround.h \
     main.h \
     mainwindow.h \
-    system_0.h
+    system_0.h \
+    system_0_common.h \
+    system_0_final.h
 
 FORMS += \
     mainwindow.ui

@@ -1,17 +1,18 @@
-#ifndef FIRSTROUND_H
-#define FIRSTROUND_H
+#ifndef SYSTEM_0_COMMON_H
+#define SYSTEM_0_COMMON_H
 
 #include "main.h"
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 
-class FirstRound : public QGraphicsObject
+class System_0_Common : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    FirstRound(QList<athlete> = {});
+    System_0_Common(QList<athlete>);
     int getHeight(void);
+    void setRates(QList<rates>);
 
 private:
     QList<athlete> lAthletes;
@@ -42,8 +43,8 @@ private:
     QList<bool> hoverPlaceFlags; //список флагов наведения курсора на ячейку выбора места
 
 signals:
-    void sigPlace(int, QString);
+    void sigPlace(QList<athlete>);
 
 };
 
-#endif // FIRSTROUND_H
+#endif // SYSTEM_0_COMMON_H

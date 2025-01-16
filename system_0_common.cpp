@@ -1,9 +1,9 @@
-#include "firstround.h"
+#include "system_0_common.h"
 
 #include <QPainter>
 #include <QComboBox>
 
-FirstRound::FirstRound(QList<athlete> list){
+System_0_Common::System_0_Common(QList<athlete> list){
     lAthletes = list;
 
     for(int i = 0; i < list.count(); i++){
@@ -21,31 +21,39 @@ FirstRound::FirstRound(QList<athlete> list){
         s = lAthletes.at(i).team.simplified();
         lAthletes[i].team = s.replace(s.indexOf(" "), 1, "\n");
         hoverPlaceFlags.append(false);
+        if(lAthletes[i].place != "")
+            currentListPlaces.append(lAthletes[i].place);
     }
 
-    // menu.addAction(new QAction(""));
-    // menu.addAction(new QAction("4"));
-    // menu.addAction(new QAction("1"));
-    // menu.addAction(new QAction("2"));
-    // menu.addAction(new QAction("3"));
     menu = new QMenu;
-
     setAcceptHoverEvents(true);
 }
 
-int FirstRound::getHeight()
+int System_0_Common::getHeight()
 {
     return lAthletes.count() * 40;
 }
 
-QRectF FirstRound::boundingRect() const
+void System_0_Common::setRates(QList<rates> list)
+{
+    foreach(auto each, list){
+        for(int i = 0; i < lAthletes.count(); i++){
+            if(each.id == lAthletes.at(i).id){
+                lAthletes[i].rate = each.rate;
+                lAthletes[i].add_rate = each.add_rate;
+            }
+        }
+    }
+}
+
+QRectF System_0_Common::boundingRect() const
 {
     qreal penWidth = 1;
     return QRectF(penWidth / 2 - 10, penWidth / 2 - 10 - 40,
                   400 + penWidth + 20, 40 * lAthletes.count() + penWidth + 10 + 40);
 }
 
-void FirstRound::paint(QPainter *painter,
+void System_0_Common::paint(QPainter *painter,
                        const QStyleOptionGraphicsItem*,
                        QWidget*)
 {
@@ -92,7 +100,7 @@ void FirstRound::paint(QPainter *painter,
     }
 }
 
-void FirstRound::mousePressEvent(QGraphicsSceneMouseEvent* e){
+void System_0_Common::mousePressEvent(QGraphicsSceneMouseEvent* e){
     int x = e->pos().x();
     int y = e->pos().y();
 
@@ -116,7 +124,18 @@ void FirstRound::mousePressEvent(QGraphicsSceneMouseEvent* e){
             }
             lAthletes[index].place = act->text();
             currentListPlaces.append(act->text());
-            emit sigPlace(lAthletes[index].id, lAthletes[index].place);
+            QList<athlete> lA{athlete(), athlete(), athlete(), athlete()};
+            foreach(auto each, lAthletes){
+                if(each.place == "1")
+                    lA[0] = each;
+                else if(each.place == "2")
+                    lA[1] = each;
+                else if(each.place == "3")
+                    lA[2] = each;
+                else if(each.place == "4")
+                    lA[3] = each;
+            }
+            emit sigPlace(lA);
             update();
         }
         return;
@@ -137,16 +156,13 @@ void FirstRound::mousePressEvent(QGraphicsSceneMouseEvent* e){
                 return false;
             if(a2.place == "")
                 return true;
-            //if(a1.place == "")
             return a1.place < a2.place;
-            //else
-            //    return a1.place > a2.place;
         });
         return;
     }
 }
 
-void FirstRound::hoverMoveEvent(QGraphicsSceneHoverEvent* e)
+void System_0_Common::hoverMoveEvent(QGraphicsSceneHoverEvent* e)
 {
     int x = e->pos().x();
     int y = e->pos().y();

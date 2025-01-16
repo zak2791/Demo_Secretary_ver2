@@ -2,45 +2,47 @@
 #define COMPETITIONSYSTEM_H
 
 #include "qgraphicsscene.h"
+#include "main.h"
 
 class CompetitionSystem : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    CompetitionSystem();
+    CompetitionSystem(int, int, QList<athlete>, QVariant);
 
 public slots:
+
+    // virtual void setResult(int,                 //id категории
+    //                        int,                 //режим
+    //                        QList<QString>       //список значений
+    //                        ) = 0;
+
+    virtual void cancelSendOnMat(int,       //id категории
+                                 int        //режим
+                                 ) = 0;
+
     ///////////////////////////////////////
-    /// \brief setResult                ///
+    /// \brief setRates                ///
     /// установка результатов с ковра   ///
     ///////////////////////////////////////
-    virtual void setResult(int,                 //id категории
-                           int,                 //режим
-                           QList<QString>       //список значений
-                           ) = 0;
+    virtual void setRates(int,              //id категории
+                          int,              //режим
+                          QList<rates>      //оценки
+                          ) = 0;
 
 protected:
-    int id;             //id категории
-    int id_system;      //система проведения соревнований
-    int sendingFlag;    //флаг ожидания отправки данных на ковер
-
-protected slots:
-
-    // virtual void saveData(int,                  //id категории
-    //                       int,                  //режим
-    //                       QList<QString>        //список значений
-    //                       ) = 0;
-
-    ///////////////////////////////////
-    /// \brief sendOnMat            ///
-    /// отправка данных на ковер    ///
-    ///////////////////////////////////
-    virtual void sendOnMat(int,                 //id категории
-                           int,                 //режим
-                           QList<QString>) = 0; //список значений
+    int id;                     //id категории
+    int id_system;              //система проведения соревнований
+    //int sendingFlag;          //флаг ожидания отправки данных на ковер
+    QList<athlete> lAthlete;    //
+    QVariant data;              //
 
 signals:
-    void sigSendOnMat(int, int, QList<QString>);
+    void sigSendOnMat(int,
+                      int,
+                      int,
+                      QVariant
+                      );
 
     ///////////////////////////////////////////////////////////
     /// \brief sigSaveData Сигнал сохранения в базе данных  ///                                                            ///
@@ -49,10 +51,13 @@ signals:
     /// 0 - сохранение места в общем круге                  ///
     ///////////////////////////////////////////////////////////
     void sigSaveData(int,               //id категории
-                     int,               //id_system
+                     int,               //id_system ???
                      int,               //режим
-                     QList<QString>
+                     QVariant           //данные для отправки
                      );
+
+
+
 
 };
 

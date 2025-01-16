@@ -1,21 +1,21 @@
-#include "HalfAndFinalOne3.h"
+#include "system_0_final.h"
 
 #include <QPainter>
 
-ItemHalfAndFinalOne3::ItemHalfAndFinalOne3(QList<athlete> aList,
-                                           final_0 data
-                                           ) {
+System_0_Final::System_0_Final(QList<athlete> aList,
+                               final_0 data
+                               ) {
 
-    //setAthletes(aList);
-    //setRates(rList);
-    if(aList.count() == 4){
-        athlete1 = aList.at(0);
-        athlete3 = aList.at(1);
-        athlete2 = aList.at(2);
-        athlete4 = aList.at(3);
-    }
-    qDebug()<<athlete1.id;
+    setAthletes(aList);
     data_final_0 = data;
+    // if(aList.count() == 4){
+    //     athlete1 = aList.at(0);
+    //     athlete3 = aList.at(3);
+    //     athlete2 = aList.at(1);
+    //     athlete4 = aList.at(2);
+    // }
+    //qDebug()<<athlete1.id;
+    //data_final_0 = data;
 
     //winnerHalfOne = data_final_0.win_1;
     if(data_final_0.win_1 == 1){
@@ -62,14 +62,14 @@ ItemHalfAndFinalOne3::ItemHalfAndFinalOne3(QList<athlete> aList,
 
 }
 
-QRectF ItemHalfAndFinalOne3::boundingRect() const
+QRectF System_0_Final::boundingRect() const
 {
     qreal penWidth = 1;
     return QRectF(penWidth / 2 - 10, penWidth / 2 - 10,
                   680 + penWidth + 10, 440 + penWidth + 10);
 }
 
-void ItemHalfAndFinalOne3::paint(QPainter *painter,
+void System_0_Final::paint(QPainter *painter,
                                  const QStyleOptionGraphicsItem*,
                                  QWidget*)
 {
@@ -306,89 +306,41 @@ void ItemHalfAndFinalOne3::paint(QPainter *painter,
 
 }
 
-void ItemHalfAndFinalOne3::setAthletes(QList<athlete> aList)
+void System_0_Final::setAthletes(QList<athlete> aList)
 {
-    if(aList.count() == 4){
-        name1 = aList.at(0).name.simplified();
-        name1 = name1.replace(name1.indexOf(" "), 1, "\n");
-        name3 = aList.at(1).name;
-        name3 = name3.replace(name3.indexOf(" "), 1, "\n");
-        name2 = aList.at(2).name;
-        name2 = name2.replace(name2.indexOf(" "), 1, "\n");
-        name4 = aList.at(3).name;
-        name4 = name4.replace(name4.indexOf(" "), 1, "\n");
-
-        team1 = aList.at(0).team;
-        team1 = team1.replace(team1.indexOf(" "), 1, "\n");
-        team3 = aList.at(1).team;
-        team3 = team3.replace(team3.indexOf(" "), 1, "\n");
-        team2 = aList.at(2).team;
-        team2 = team2.replace(team2.indexOf(" "), 1, "\n");
-        team4 = aList.at(3).team;
-        team4 = team4.replace(team4.indexOf(" "), 1, "\n");
-
-        range1 = aList.at(0).range;
-        range3 = aList.at(1).range;
-        range2 = aList.at(2).range;
-        range4 = aList.at(3).range;
-    }
+    athlete1 = aList.at(0);
+    athlete3 = aList.at(3);
+    athlete2 = aList.at(1);
+    athlete4 = aList.at(2);
+    update();
 }
 
-void ItemHalfAndFinalOne3::setAthlete(int draw, athlete athl)
+void System_0_Final::setRates(int mode, QList<rates> rates)
 {
-    if(draw == 1){
-        name1 = athl.name.simplified();
-        name1 = name1.replace(name1.indexOf(" "), 1, "\n");
-        team1 = athl.team;
-        team1 = team1.replace(team1.indexOf(" "), 1, "\n");
-        range1 = athl.range;
-    }
-    else if(draw == 2){
-        name2 = athl.name.simplified();
-        name2 = name2.replace(name2.indexOf(" "), 1, "\n");
-        team2 = athl.team;
-        team2 = team2.replace(team2.indexOf(" "), 1, "\n");
-        range2 = athl.range;
-    }
-    else if(draw == 3){
-        name3 = athl.name.simplified();
-        name3 = name3.replace(name3.indexOf(" "), 1, "\n");
-        team3 = athl.team;
-        team3 = team3.replace(team3.indexOf(" "), 1, "\n");
-        range3 = athl.range;
+    if(mode == 1){
+        data_final_0.rate1 = rates.at(0).rate;
+        data_final_0.rate2 = rates.at(1).rate;
+        data_final_0.rate3 = rates.at(2).rate;
+        data_final_0.rate4 = rates.at(3).rate;
+        data_final_0.add_rate1 = rates.at(0).add_rate;
+        data_final_0.add_rate2 = rates.at(1).add_rate;
+        data_final_0.add_rate3 = rates.at(2).add_rate;
+        data_final_0.add_rate4 = rates.at(3).add_rate;
     }
     else{
-        name4 = athl.name.simplified();
-        name4 = name4.replace(name4.indexOf(" "), 1, "\n");
-        team4 = athl.team;
-        team4 = team4.replace(team4.indexOf(" "), 1, "\n");
-        range4 = athl.range;
+        data_final_0.rate_fin1 = rates.at(0).rate;
+        data_final_0.rate_fin2 = rates.at(1).rate;
+        data_final_0.rate_third1 = rates.at(2).rate;
+        data_final_0.rate_third2 = rates.at(3).rate;
+        data_final_0.add_rate_fin1 = rates.at(0).add_rate;
+        data_final_0.add_rate_fin2 = rates.at(1).add_rate;
+        data_final_0.add_rate_third1 = rates.at(2).add_rate;
+        data_final_0.add_rate_third2 = rates.at(3).add_rate;
     }
+    update();
 }
 
-void ItemHalfAndFinalOne3::setRates(QList<rates> rList)
-{
-    // if(rList.count() == 8){
-    //     rate1           = rList.at(0).rate;
-    //     addRate1        = rList.at(0).addRate;
-    //     rate3           = rList.at(1).rate;
-    //     addRate3        = rList.at(1).addRate;
-    //     rate2           = rList.at(2).rate;
-    //     addRate2        = rList.at(2).addRate;
-    //     rate4           = rList.at(3).rate;
-    //     addRate4        = rList.at(3).addRate;
-    //     rateFin1        = rList.at(4).rate;
-    //     addRateFin1     = rList.at(4).addRate;
-    //     rateFin2        = rList.at(5).rate;
-    //     addRateFin2     = rList.at(5).addRate;
-    //     rateThird1      = rList.at(6).rate;
-    //     addRateThird1   = rList.at(6).addRate;
-    //     rateThird2      = rList.at(7).rate;
-    //     addRateThird2   = rList.at(7).addRate;
-    // }
-}
-
-void ItemHalfAndFinalOne3::cancelSendOnMat(int onmat)
+void System_0_Final::cancelSendOnMat(int onmat)
 {
     if(onmat == 0)
         data_final_0.flag_on_mat_half  = false;
@@ -396,7 +348,7 @@ void ItemHalfAndFinalOne3::cancelSendOnMat(int onmat)
         data_final_0.flag_on_mat_final = false;
 }
 
-void ItemHalfAndFinalOne3::mousePressEvent(QGraphicsSceneMouseEvent* e)
+void System_0_Final::mousePressEvent(QGraphicsSceneMouseEvent* e)
 {
     int x = e->pos().x();
     int y = e->pos().y();
@@ -538,7 +490,7 @@ void ItemHalfAndFinalOne3::mousePressEvent(QGraphicsSceneMouseEvent* e)
     }
 }
 
-void ItemHalfAndFinalOne3::hoverMoveEvent(QGraphicsSceneHoverEvent* e)
+void System_0_Final::hoverMoveEvent(QGraphicsSceneHoverEvent* e)
 {
     int x = e->pos().x();
     int y = e->pos().y();

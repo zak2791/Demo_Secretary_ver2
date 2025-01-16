@@ -1,5 +1,5 @@
-#ifndef HALFANDFINALONE3_H
-#define HALFANDFINALONE3_H
+#ifndef SYSTEM_0_FINAL_H
+#define SYSTEM_0_FINAL_H
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
@@ -9,24 +9,21 @@
 ///////////////////////////////////////////////////////
 /// \brief Полуфинал и финал с одним третьим местом ///
 ///////////////////////////////////////////////////////
-class ItemHalfAndFinalOne3 : public QGraphicsObject
+class System_0_Final : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    // ItemHalfAndFinalOne3(QList<athlete> = {},   //список финалистов согласно порядка номеров жеребьёвки (1, 3, 2, 4)
-    //                      QList<rates> = {},     //оценки (8 оценок - 4 полуфиналиста, 2 финалиста,
-    //                                             //2 за третье место (порядок сверху вниз))
-    //                      QList<int> = {},       //флаги победителей (0 - никто, 1 - верхний, 2 - нижний) полуфиналов, финала и за третье место
-    //                      QList<bool> = {});     //флаги отправки на ковер полуфиналов и финалов (false - не отправлен, true - отправлен)
+    System_0_Final(QList<athlete>,                  //список финалистов согласно занятым местам (1, 2, 3, 4)
+                   final_0 = final_0()              //данные финальной части
+                   );
 
-    ItemHalfAndFinalOne3(QList<athlete> = {},   //список финалистов согласно порядка номеров жеребьёвки (1, 3, 2, 4)
-                         final_0 = final_0()    //оценки (8 оценок - 4 полуфиналиста, 2 финалиста,
-                         );
+    void setRates(int,                               //режим: 1 - полуфиналы, 2 - финалы
+                  QList<rates>);                     //данные
 
-    void setAthletes(QList<athlete>);           //установить финалистов
-    void setAthlete(int, athlete);              //установить финалиста
-    void setRates(QList<rates>);                //установить оценки
-    void cancelSendOnMat(int);                  //отмена отправки на ковер, 0 - отмена полуфиналов, 1 - отмена финалов
+    void cancelSendOnMat(int);                      //отмена отправки на ковер, 0 - отмена полуфиналов, 1 - отмена финалов
+
+public slots:
+    void setAthletes(QList<athlete>);               //установить финалистов
 
 private:
     QRectF boundingRect(void) const override;
@@ -170,4 +167,4 @@ signals:
 
 };
 
-#endif // HALFANDFINALONE3_H
+#endif // SYSTEM_0_FINAL_H
