@@ -17,11 +17,15 @@ public:
     System_0(int,
              int,
              QList<athlete>,
-             QVariant);
+             QVariant,
+             QString, QString, QString);
 
 public slots:
     virtual void cancelSendOnMat(int,       //id категории
-                                 int        //режим
+                                 int       //режим
+                                 //QString,   //категория
+                                 //QString,   //возраст
+                                 //QString    //вес
                                  );
 
     virtual void setRates(int,              //id категории

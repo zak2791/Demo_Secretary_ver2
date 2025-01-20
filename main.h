@@ -4,6 +4,15 @@
 #include <QString>
 #include <QJsonObject>
 
+// struct athl{
+//     QString name;
+//     QString team;
+//     QString range;
+//     QString category;
+//     QString age;
+//     QString weight;
+// };
+
 struct athlete
 {
     athlete(int i = -1,

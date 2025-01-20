@@ -2,9 +2,11 @@
 #include "system_0.h"
 #include "ui_mainwindow.h"
 
+#include <QAxObject>
 //#include "HalfAndFinalOne3.h"
 //#include "firstround.h"
 #include "main.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -12,6 +14,62 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     //scene = new QGraphicsScene;
+    QAxObject* excel = new QAxObject("Excel.Application", 0);
+    QAxObject* workbooks = excel->querySubObject("Workbooks");
+    QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", "C:/Users/Colorfull/Desktop/test.xlsx");
+    QAxObject* sheets = workbook->querySubObject("Sheets");
+    QAxObject *StatSheet = sheets->querySubObject( "Item(const QVariant&)", QVariant(1) );
+
+    QList<QStringList> lAt;
+    for(int i = 1; i < 1000; i++){
+        QStringList a;
+        QVariant result;
+        for(int j = 1; j < 7; j++){
+            QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, j);
+            if(j == 1)
+                result = cell->property("Value");
+            a.append(cell->property("Value").toString());
+            delete cell;
+        }
+        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 2);
+        // a.append(cell->property("Value").toString());
+        // delete cell;
+
+        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 3);
+        // a.append(cell->property("Value").toString());
+        // delete cell;
+
+        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 4);
+        // a.append(cell->property("Value").toString());
+        // delete cell;
+
+        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 5);
+        // a.append(cell->property("Value").toString());
+        // delete cell;
+
+        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 6);
+        // a.append(cell->property("Value").toString());
+        // delete cell;
+
+        lAt.append(a);
+
+        if(result.toString() == "")
+            break;
+    }
+
+    workbook->dynamicCall( "Close()" );
+    excel->dynamicCall( "Quit()" );
+    delete StatSheet;
+    delete sheets;
+    delete workbook;
+
+    delete workbooks;
+    delete excel;
+
+    panel = new CategoryControlPanel(lAt);
+    connect(panel, &CategoryControlPanel::sigChoosingCategory,
+            [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
+    ui->verticalLayout->insertWidget(0, panel);
 
 
     QList<athlete> la;
@@ -49,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug()<<la.count();
     final_0 fData = final_0();
     QVariant data = QVariant::fromValue(fData);
-    System_0* scene = new System_0(1, 0, la, data);
+    System_0* scene = new System_0(1, 0, la, data, "", "", "");
     scene->setRates(1, 0, lr);
     scene->setRates(1, 1, lr);
     scene->setRates(1, 2, lr);

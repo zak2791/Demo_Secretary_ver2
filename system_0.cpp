@@ -1,19 +1,48 @@
 #include "system_0.h"
 
-System_0::System_0(int _id, int _id_system, QList<athlete> list, QVariant _data)  : CompetitionSystem(_id, _id_system, list, _data){
+System_0::System_0(int _id,
+                   int _id_system,
+                   QList<athlete> list,
+                   QVariant _data,
+                   QString c,
+                   QString a,
+                   QString w)  :
+    CompetitionSystem(_id, _id_system, list, _data, c, a, w){
+
     final_0 final_data = _data.value<final_0>();
     commonRoundItem = new System_0_Common(lAthlete);
 
     QList<athlete> lA{athlete(), athlete(), athlete(), athlete()};
     foreach(auto each, lAthlete){
-        if(each.place == "1")
-            lA[0] = each;
-        else if(each.place == "2")
-            lA[1] = each;
-        else if(each.place == "3")
-            lA[2] = each;
-        else if(each.place == "4")
-            lA[3] = each;
+        QString s;
+        if(each.place == "1"){
+            s = each.name.simplified();
+            lA[0].name = s.replace(s.indexOf(" "), 1, "\n");
+            s = each.team.simplified();
+            lA[0].team = s.replace(s.indexOf(" "), 1, "\n");
+            lA[0].range = each.range;
+        }
+        else if(each.place == "2"){
+            s = each.name.simplified();
+            lA[1].name = s.replace(s.indexOf(" "), 1, "\n");
+            s = each.team.simplified();
+            lA[1].team = s.replace(s.indexOf(" "), 1, "\n");
+            lA[1].range = each.range;
+        }
+        else if(each.place == "3"){
+            s = each.name.simplified();
+            lA[2].name = s.replace(s.indexOf(" "), 1, "\n");
+            s = each.team.simplified();
+            lA[2].team = s.replace(s.indexOf(" "), 1, "\n");
+            lA[2].range = each.range;
+        }
+        else if(each.place == "4"){
+            s = each.name.simplified();
+            lA[3].name = s.replace(s.indexOf(" "), 1, "\n");
+            s = each.team.simplified();
+            lA[3].team = s.replace(s.indexOf(" "), 1, "\n");
+            lA[3].range = each.range;
+        }
     }
 
     finalItem = new System_0_Final(lA, final_data);

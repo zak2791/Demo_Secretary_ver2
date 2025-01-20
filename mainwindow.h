@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include "categorycontrolpanel.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +24,8 @@ private:
     Ui::MainWindow *ui;
 
     QGraphicsScene* scene;
+
+    CategoryControlPanel* panel;
 
 };
 #endif // MAINWINDOW_H

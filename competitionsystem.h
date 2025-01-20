@@ -8,7 +8,14 @@ class CompetitionSystem : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    CompetitionSystem(int, int, QList<athlete>, QVariant);
+    CompetitionSystem(int,
+                      int,
+                      QList<athlete>,
+                      QVariant,
+                      QString c,
+                      QString a,
+                      QString w);
+    //bool isCategory(QString c, QString a, QString w){return c == category && a == age && w == weight;}
 
 public slots:
 
@@ -18,7 +25,10 @@ public slots:
     //                        ) = 0;
 
     virtual void cancelSendOnMat(int,       //id категории
-                                 int        //режим
+                                 int       //режим
+                                 //QString,   //категория
+                                 //QString,   //возраст
+                                 //QString    //вес
                                  ) = 0;
 
     ///////////////////////////////////////
@@ -36,6 +46,9 @@ protected:
     //int sendingFlag;          //флаг ожидания отправки данных на ковер
     QList<athlete> lAthlete;    //
     QVariant data;              //
+    QString category;
+    QString age;
+    QString weight;
 
 signals:
     void sigSendOnMat(int,
