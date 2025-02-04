@@ -10,6 +10,7 @@ class CompetitionSystem : public QGraphicsScene
 public:
     CompetitionSystem(int,
                       int,
+                      int,
                       QList<athlete>,
                       QVariant,
                       QString c,
@@ -37,12 +38,13 @@ public slots:
     ///////////////////////////////////////
     virtual void setRates(int,              //id категории
                           int,              //режим
-                          QList<rates>      //оценки
+                          QVariant           //оценки
                           ) = 0;
 
 protected:
     int id;                     //id категории
     int id_system;              //система проведения соревнований
+    int status;
     //int sendingFlag;          //флаг ожидания отправки данных на ковер
     QList<athlete> lAthlete;    //
     QVariant data;              //

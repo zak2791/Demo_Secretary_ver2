@@ -16,6 +16,7 @@ class System_0 : public CompetitionSystem
 public:
     System_0(int,
              int,
+             int,
              QList<athlete>,
              QVariant,
              QString, QString, QString);
@@ -30,7 +31,7 @@ public slots:
 
     virtual void setRates(int,              //id категории
                           int,              //режим
-                          QList<rates>      //
+                          QVariant      //
                           );
 
 private slots:

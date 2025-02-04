@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include "categorycontrolpanel.h"
-
+#include "qlabel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setControlPanel(QList<std::tuple<int, QString, QString, QString>>);
 
 private:
     Ui::MainWindow *ui;
@@ -26,6 +27,11 @@ private:
     QGraphicsScene* scene;
 
     CategoryControlPanel* panel;
+
+    QStatusBar* statusBar;
+    QLabel lblStatus;
+
+
 
 };
 #endif // MAINWINDOW_H

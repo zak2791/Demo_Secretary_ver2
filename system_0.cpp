@@ -2,15 +2,16 @@
 
 System_0::System_0(int _id,
                    int _id_system,
+                   int _status,
                    QList<athlete> list,
                    QVariant _data,
                    QString c,
                    QString a,
                    QString w)  :
-    CompetitionSystem(_id, _id_system, list, _data, c, a, w){
+    CompetitionSystem(_id, _id_system, _status, list, _data, c, a, w){
 
     final_0 final_data = _data.value<final_0>();
-    commonRoundItem = new System_0_Common(lAthlete);
+    commonRoundItem = new System_0_Common(lAthlete, final_data.flag_on_mat_common);
 
     QList<athlete> lA{athlete(), athlete(), athlete(), athlete()};
     foreach(auto each, lAthlete){
@@ -56,13 +57,13 @@ System_0::System_0(int _id,
     connect(commonRoundItem, SIGNAL(sigPlace(QList<athlete>)), finalItem, SLOT(setAthletes(QList<athlete>)));
 }
 
-void System_0::setRates(int _id, int _mode, QList<rates> _rates)
+void System_0::setRates(int _id, int _mode, QVariant _rates)
 {
     if(_id == id){
         if(_mode == 0)
-            commonRoundItem->setRates(_rates);
+            commonRoundItem->setRates(qvariant_cast<QList<rates>>(_rates));
         else
-            finalItem->setRates(_mode, _rates);
+            finalItem->setRates(_mode, qvariant_cast<QList<rates>>(_rates));
     }
 }
 

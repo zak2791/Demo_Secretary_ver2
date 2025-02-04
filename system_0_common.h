@@ -10,7 +10,7 @@ class System_0_Common : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    System_0_Common(QList<athlete>);
+    System_0_Common(QList<athlete>, bool);
     int getHeight(void);
     void setRates(QList<rates>);
 
@@ -40,7 +40,9 @@ private:
 
     QStringList currentListPlaces;  //список с текущими установленными местами
 
-    QList<bool> hoverPlaceFlags; //список флагов наведения курсора на ячейку выбора места
+    QList<bool> hoverPlaceFlags;    //список флагов наведения курсора на ячейку выбора места
+
+    bool flagOnMat = false;         //флаг отправки на ковер
 
 signals:
     void sigPlace(QList<athlete>);

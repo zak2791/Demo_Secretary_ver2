@@ -3,9 +3,9 @@
 #include <QPainter>
 #include <QComboBox>
 
-System_0_Common::System_0_Common(QList<athlete> list){
+System_0_Common::System_0_Common(QList<athlete> list, bool onMat){
     lAthletes = list;
-
+    flagOnMat = onMat;
     for(int i = 0; i < list.count(); i++){
         lRectDraw.append(QRect(  0, i * 40, 40, 40));
         lRectName.append(QRect( 40, i * 40, 100, 40));

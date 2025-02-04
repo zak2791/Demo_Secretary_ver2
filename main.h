@@ -79,6 +79,7 @@ struct final_0
         QString arf2 = "",
         QString art1 = "",
         QString art2 = "",
+        bool fc = false,
         bool fh = false,
         bool ff = false
         )
@@ -103,6 +104,7 @@ struct final_0
         add_rate_fin2 = arf2;
         add_rate_third1 = art1;
         add_rate_third2 = art2;
+        flag_on_mat_common = fc;
         flag_on_mat_half = fh;
         flag_on_mat_final = ff;
     }
@@ -126,6 +128,7 @@ struct final_0
     QString add_rate_fin2;
     QString add_rate_third1;
     QString add_rate_third2;
+    bool flag_on_mat_common;
     bool flag_on_mat_half;
     bool flag_on_mat_final;
 };

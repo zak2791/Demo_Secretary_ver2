@@ -1,7 +1,7 @@
 #include "categorycontrolpanel.h"
 #include "ui_categorycontrolpanel.h"
 
-CategoryControlPanel::CategoryControlPanel(QList<QStringList> list, QWidget *parent)
+CategoryControlPanel::CategoryControlPanel(QList<std::tuple<int, QString, QString, QString> > list, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::CategoryControlPanel)
 {

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "controller.h"
 #include "system_0.h"
 #include "ui_mainwindow.h"
 
@@ -13,7 +14,25 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //scene = new QGraphicsScene;
+
+    statusBar = new QStatusBar(this);
+    statusBar->addWidget(&lblStatus);
+    setStatusBar(statusBar);
+
+    QAction* actAdd = ui->aAdd;
+    Controller* controller = new Controller(this);
+    connect(ui->aCreate,    &QAction::triggered,         controller, &::Controller::createCompetition);
+    connect(ui->aOpen,      &QAction::triggered,         controller, &::Controller::openCompetition);
+    connect(ui->aAdd,       &QAction::triggered,         controller, &::Controller::addAthletes);
+    connect(controller,     &Controller:: sigCompetition, [actAdd, this](QString s) {
+        if(s == "")
+            actAdd->setEnabled(false);
+        else{
+            actAdd->setEnabled(true);
+            lblStatus.setText(s.left(s.lastIndexOf(".")).replace("_", " "));
+        }
+    });
+
     QAxObject* excel = new QAxObject("Excel.Application", 0);
     QAxObject* workbooks = excel->querySubObject("Workbooks");
     QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", "C:/Users/Colorfull/Desktop/test.xlsx");
@@ -31,25 +50,6 @@ MainWindow::MainWindow(QWidget *parent)
             a.append(cell->property("Value").toString());
             delete cell;
         }
-        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 2);
-        // a.append(cell->property("Value").toString());
-        // delete cell;
-
-        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 3);
-        // a.append(cell->property("Value").toString());
-        // delete cell;
-
-        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 4);
-        // a.append(cell->property("Value").toString());
-        // delete cell;
-
-        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 5);
-        // a.append(cell->property("Value").toString());
-        // delete cell;
-
-        // cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, 6);
-        // a.append(cell->property("Value").toString());
-        // delete cell;
 
         lAt.append(a);
 
@@ -62,14 +62,13 @@ MainWindow::MainWindow(QWidget *parent)
     delete StatSheet;
     delete sheets;
     delete workbook;
-
     delete workbooks;
     delete excel;
 
-    panel = new CategoryControlPanel(lAt);
-    connect(panel, &CategoryControlPanel::sigChoosingCategory,
-            [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
-    ui->verticalLayout->insertWidget(0, panel);
+    // panel = new CategoryControlPanel(lAt);
+    // connect(panel, &CategoryControlPanel::sigChoosingCategory,
+    //         [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
+    // ui->verticalLayout->insertWidget(0, panel);
 
 
     QList<athlete> la;
@@ -82,42 +81,39 @@ MainWindow::MainWindow(QWidget *parent)
     lr.append(rates(1, "150.0", "2(10)"));
     lr.append(rates(2, "150.0", "3(10)"));
     lr.append(rates(3, "150.0", "4(10)"));
-    // lr.append(rates("150.0", "5(10)"));
-    // lr.append(rates("150.0", "6(10)"));
-    // lr.append(rates("150.0", "7(10)"));
-    // lr.append(rates("150.0", "8(10)"));
 
-    // QList<athlete1round> lfr;
+    //QVariant::fromValue(lr);
 
-    // lfr.append(athlete1round("Иванов Иван", "Брянская область", "КМС", "150.0", "1(10)", "", 0));
-    // lfr.append(athlete1round("Кузнецов Глеб", "Брянская область", "МС", "140.0", "1(10)", "", 1));
-    // lfr.append(athlete1round("Сафронов Иван", "Брянская область", "1", "140.0", "1(10)", "", 2));
-    // lfr.append(athlete1round("Перепелка Семен", "Брянская область", "1", "150.5", "1(10)", "", 3));
-    // lfr.append(athlete1round("Круглов Дмитрий", "Брянская область", "КМС", "140.0", "1(10)", "", 4));
-
-    //qDebug()<<"1";
-    //FirstRound* fRound = new FirstRound(lfr);
-    //qDebug()<<"2";
-
-    //ItemHalfAndFinalOne3* item = new ItemHalfAndFinalOne3(la, lr, QList({1, 2, 0, 1}), QList({true, false}));
-    //scene->addItem(fRound);
-    //scene->addItem(item);
-    //item->moveBy(0, fRound->getHeight() + 80);
-    //scene->setSceneRect(0,0,300,300);
     qDebug()<<la.count();
     final_0 fData = final_0();
     QVariant data = QVariant::fromValue(fData);
-    System_0* scene = new System_0(1, 0, la, data, "", "", "");
-    scene->setRates(1, 0, lr);
-    scene->setRates(1, 1, lr);
-    scene->setRates(1, 2, lr);
-    ui->gViewMain->setScene(scene);
-    //ui->gViewMain->scene()->setSceneRect(QRectF(QPointF(),ui->gViewMain->size()));
-    //ui->gViewMain->centerOn(-100, -100);
-    //qDebug()<<scene->sceneRect();
+    //System_0* scene = new System_0(1, 0, la, data, "", "", "");
+    //scene->setRates(1, 0, QVariant::fromValue(lr));
+    //scene->setRates(1, 1, QVariant::fromValue(lr));
+    //scene->setRates(1, 2, QVariant::fromValue(lr));
+    //ui->gViewMain->setScene(scene);
+
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::setControlPanel(std::tuple<int, QString, QString, QString> list)
+{
+    panel = findChild<CategoryControlPanel*>();
+    if(panel != nullptr){
+        ui->verticalLayout->removeWidget(panel);
+    }
+    delete panel;
+
+    qDebug()<<list;
+    // panel = new CategoryControlPanel(list);
+    // connect(panel, &CategoryControlPanel::sigChoosingCategory,
+    //         [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
+    // ui->verticalLayout->insertWidget(0, panel);
+}
+
+
