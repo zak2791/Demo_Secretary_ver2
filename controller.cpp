@@ -53,7 +53,6 @@ void Controller::openCompetition()
 
         lTpl.append(std::tuple(id, category, age, weight));
 
-        qDebug()<<lSystem.count();
     }
 
     main_window->setControlPanel(lTpl);

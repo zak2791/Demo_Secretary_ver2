@@ -31,18 +31,19 @@ class CategoryControlPanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit CategoryControlPanel(QList<QStringList>, QWidget *parent = nullptr);
+    explicit CategoryControlPanel(QList<std::tuple<int, QString, QString, QString>>,
+                                  QWidget *parent = nullptr);
     ~CategoryControlPanel();
 
 private:
     Ui::CategoryControlPanel *ui;
-    QList<QRadioButton*> rbCat;
-    QList<QRadioButton*> rbAge;
-    QList<QRadioButton*> rbWeight;
+    QList<QRadioButton*> lRbCat;
+    QList<QRadioButton*> lRbAge;
+    QList<QRadioButton*> lRbWeight;
     QString currentCategory;
     QString currentAge;
     QString currentWeight;
-    QList<QStringList> sCA;
+    QList<std::tuple<int, QString, QString, QString>> tWeights;
     QMap<QString, int> currAge;
     QMap<QString, int> currWeight;
 

@@ -101,7 +101,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setControlPanel(std::tuple<int, QString, QString, QString> list)
+void MainWindow::setControlPanel(QList<std::tuple<int, QString, QString, QString>> list)
 {
     panel = findChild<CategoryControlPanel*>();
     if(panel != nullptr){
@@ -109,8 +109,8 @@ void MainWindow::setControlPanel(std::tuple<int, QString, QString, QString> list
     }
     delete panel;
 
-    qDebug()<<list;
-    // panel = new CategoryControlPanel(list);
+    //qDebug()<<list;
+    panel = new CategoryControlPanel(list);
     // connect(panel, &CategoryControlPanel::sigChoosingCategory,
     //         [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
     // ui->verticalLayout->insertWidget(0, panel);
