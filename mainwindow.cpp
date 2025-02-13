@@ -1,13 +1,8 @@
 #include "mainwindow.h"
-#include "controller.h"
-#include "system_0.h"
+
 #include "ui_mainwindow.h"
 
-#include <QAxObject>
-//#include "HalfAndFinalOne3.h"
-//#include "firstround.h"
-#include "main.h"
-
+#include <QActionGroup>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,10 +14,15 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar->addWidget(&lblStatus);
     setStatusBar(statusBar);
 
+    listWidgetMat1 = ui->lwMat1;
+    listWidgetMat2 = ui->lwMat2;
+    listWidgetMat3 = ui->lwMat3;
+
+    fillMenuLastCompetitions();
+
     QAction* actAdd = ui->aAdd;
-    Controller* controller = new Controller(this);
+    controller = new Controller(this);
     connect(ui->aCreate,    &QAction::triggered,         controller, &::Controller::createCompetition);
-    connect(ui->aOpen,      &QAction::triggered,         controller, &::Controller::openCompetition);
     connect(ui->aAdd,       &QAction::triggered,         controller, &::Controller::addAthletes);
     connect(controller,     &Controller:: sigCompetition, [actAdd, this](QString s) {
         if(s == "")
@@ -32,67 +32,18 @@ MainWindow::MainWindow(QWidget *parent)
             lblStatus.setText(s.left(s.lastIndexOf(".")).replace("_", " "));
         }
     });
+    connect(controller, SIGNAL(sigSetControlPanel(QList<std::tuple<int,QString,QString,QString> >)), this,
+            SLOT(setControlPanel(QList<std::tuple<int,QString,QString,QString> >)));
+    connect(controller, &Controller::sigRequestMat, [this](){
+        if(ui->tabMats->currentWidget()->objectName() == "tabMat1")
+            return 0;
+        else if(ui->tabMats->currentWidget()->objectName() == "tabMat2")
+            return 1;
+        else
+            return 2;
+    });
 
-    QAxObject* excel = new QAxObject("Excel.Application", 0);
-    QAxObject* workbooks = excel->querySubObject("Workbooks");
-    QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", "C:/Users/Colorfull/Desktop/test.xlsx");
-    QAxObject* sheets = workbook->querySubObject("Sheets");
-    QAxObject *StatSheet = sheets->querySubObject( "Item(const QVariant&)", QVariant(1) );
-
-    QList<QStringList> lAt;
-    for(int i = 1; i < 1000; i++){
-        QStringList a;
-        QVariant result;
-        for(int j = 1; j < 7; j++){
-            QAxObject* cell = StatSheet->querySubObject("Cells(QVariant,QVariant)", i, j);
-            if(j == 1)
-                result = cell->property("Value");
-            a.append(cell->property("Value").toString());
-            delete cell;
-        }
-
-        lAt.append(a);
-
-        if(result.toString() == "")
-            break;
-    }
-
-    workbook->dynamicCall( "Close()" );
-    excel->dynamicCall( "Quit()" );
-    delete StatSheet;
-    delete sheets;
-    delete workbook;
-    delete workbooks;
-    delete excel;
-
-    // panel = new CategoryControlPanel(lAt);
-    // connect(panel, &CategoryControlPanel::sigChoosingCategory,
-    //         [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
-    // ui->verticalLayout->insertWidget(0, panel);
-
-
-    QList<athlete> la;
-    la.append(athlete(0, "Иванов Иван", "Брянская область", "КМС", "", "", "1"));
-    la.append(athlete(1, "Петров Петр", "Брянская область", "КМС", "", "", "3"));
-    la.append(athlete(2, "Сидоров Сидор", "Брянская область", "КМС", "", "", "4"));
-    la.append(athlete(3, "Кузнецов Кузнец", "Брянская область", "КМС", "", "", "2"));
-    QList<rates> lr;
-    lr.append(rates(0, "150.0", "1(10)"));
-    lr.append(rates(1, "150.0", "2(10)"));
-    lr.append(rates(2, "150.0", "3(10)"));
-    lr.append(rates(3, "150.0", "4(10)"));
-
-    //QVariant::fromValue(lr);
-
-    qDebug()<<la.count();
-    final_0 fData = final_0();
-    QVariant data = QVariant::fromValue(fData);
-    //System_0* scene = new System_0(1, 0, la, data, "", "", "");
-    //scene->setRates(1, 0, QVariant::fromValue(lr));
-    //scene->setRates(1, 1, QVariant::fromValue(lr));
-    //scene->setRates(1, 2, QVariant::fromValue(lr));
-    //ui->gViewMain->setScene(scene);
-
+    connect(controller, &Controller::sigIsertCategoryOnMat, this, &MainWindow::insertCategoryOnMat);
 
 }
 
@@ -109,11 +60,57 @@ void MainWindow::setControlPanel(QList<std::tuple<int, QString, QString, QString
     }
     delete panel;
 
-    //qDebug()<<list;
     panel = new CategoryControlPanel(list);
-    // connect(panel, &CategoryControlPanel::sigChoosingCategory,
-    //         [=](QString a ,QString b, QString c) { qDebug()<<a<<b<<c; });
-    // ui->verticalLayout->insertWidget(0, panel);
+    ui->verticalLayout->insertWidget(0, panel);
+    connect(panel, SIGNAL(sigChoosingCategory(int)), this, SLOT(setCategory(int)));
+    setCategory(panel->getId());
+}
+
+void MainWindow::setCategory(int id)
+{
+    ui->gViewMain->setScene(controller->getCategory(id));
+}
+
+void MainWindow::insertCategoryOnMat(CategoryOnMat* cat)
+{
+    QListWidgetItem* item;
+    if(ui->tabMats->currentWidget()->objectName() == "tabMat1"){
+        item = new QListWidgetItem();
+        item->setSizeHint(cat->sizeHint());
+        listWidgetMat1->addItem(item);
+        listWidgetMat1->setItemWidget(item, cat);
+    }
+    else if(ui->tabMats->currentWidget()->objectName() == "tabMat2"){
+        item = new QListWidgetItem(listWidgetMat2);
+        item->setSizeHint(cat->sizeHint());
+        listWidgetMat2->addItem(item);
+        listWidgetMat2->setItemWidget(item, cat);
+    }
+    else{
+        item = new QListWidgetItem(listWidgetMat3);
+        item->setSizeHint(cat->sizeHint());
+        listWidgetMat3->addItem(item);
+        listWidgetMat3->setItemWidget(item, cat);
+    }
+}
+
+//////////////////////////////////////////////
+/// Заполнение меню последних соревнований ///
+//////////////////////////////////////////////
+void MainWindow::fillMenuLastCompetitions(){
+    QDir dir = QDir::current();
+    QFileInfoList lFiles = dir.entryInfoList({"*.db"}, QDir::Files, QDir::Time);
+    if(lFiles.count() > 0){
+        QActionGroup* gr = new QActionGroup(this);
+        foreach(QFileInfo inf, lFiles){
+            QAction* act = gr->addAction(inf.completeBaseName());
+            act->setCheckable(true);
+            connect(act, &QAction::triggered, [act, this](){
+                controller->openCompetition(act->text());
+            });
+        }
+        ui->mOpen->addActions(gr->actions());
+    }
 }
 
 

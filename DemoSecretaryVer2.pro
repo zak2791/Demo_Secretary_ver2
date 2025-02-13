@@ -13,10 +13,12 @@ SOURCES += \
     addingathletes.cpp \
     categorycontrolpanel.cpp \
     categorycreator.cpp \
+    categoryonmat.cpp \
     competitionsystem.cpp \
     controller.cpp \
     database.cpp \
     jsonconverter.cpp \
+    ledwidget.cpp \
     main.cpp \
     mainwindow.cpp \
     system_0.cpp \
@@ -28,10 +30,12 @@ HEADERS += \
     addingathletes.h \
     categorycontrolpanel.h \
     categorycreator.h \
+    categoryonmat.h \
     competitionsystem.h \
     controller.h \
     database.h \
     jsonconverter.h \
+    ledwidget.h \
     main.h \
     mainwindow.h \
     system_0.h \

@@ -38,14 +38,21 @@ private:
 
     QMenu* menu;
 
+    QVariant data;
+
     QStringList currentListPlaces;  //список с текущими установленными местами
 
     QList<bool> hoverPlaceFlags;    //список флагов наведения курсора на ячейку выбора места
 
     bool flagOnMat = false;         //флаг отправки на ковер
 
+    QRect rectDraw;                 //область номеров жеребьевки
+    bool flagHoverDraw = false;     //флаг наведения курсора на номера жеребьёвки
+
 signals:
+    void sigPlace(int, QString);
     void sigPlace(QList<athlete>);
+    void sigOnMAt(int, QVariant);
 
 };
 

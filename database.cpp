@@ -45,6 +45,17 @@ bool DataBase::createBase(QString name){
         return false;
     }
 
+    str = "CREATE TABLE categories_on_mats "
+          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, mat INTEGER, "
+          "data TEXT);";
+
+    if(!query->exec(str)){
+        msgBox.setText("Ошибка создания таблицы categories_on_mats " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return false;
+    }
+
     return true;
 }
 
@@ -148,4 +159,78 @@ bool DataBase::addCategories(QList<QStringList> list)
         }
     }
     return true;
+}
+
+void DataBase::writeData(int id, int id_system, int mode, QVariant data)
+{
+    if(id_system == 0){
+        if(mode == 0){      //установка места в общем круге
+            std::tuple<int, QString> tData = data.value<std::tuple<int, QString>>();
+            int id_athlet = std::get<0>(tData);
+            QString place = std::get<1>(tData);
+            writeCommonPlace(id_athlet, place);
+        }
+    }
+}
+
+int DataBase::createCategoryOnMat(int id_cat, int id_sys, int mode, int mat, QVariant data)
+{
+    QMessageBox msgBox;
+    //прочитать, модифицировать, сохранить статус в категориях
+    //создать запись с новой категорией на мате
+    QString sql = "UPDATE categories SET status = status + '%1' WHERE id = '%2';";
+    int status;
+    if(id_sys == 0){
+        if(mode == 0){          //первый круг
+            status = 1;
+        }
+        else if(mode == 1){     //полуфиналы
+            status = 2;
+        }
+        else{                   //финалы
+            status = 4;
+        }
+    }
+    else{
+        status = -5;
+    }
+    sql = sql.arg(QString::number(status)).arg(QString::number(id_cat));
+    if(!query->exec(sql)){
+        msgBox.setText("Ошибка чтения спортсмена " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return -1;
+    }
+    QJsonArray arr;
+    arr = data.toJsonArray();
+    QJsonDocument jsonDoc(arr);                             // Создаём документ из QJsonArray
+    QString jData = jsonDoc.toJson(QJsonDocument::Compact); // Сериализуем в строку (можно использовать QJsonDocument::Indented для отформатированного вывода)
+    sql = "INSERT INTO categories_on_mats (id_category, id_system, mode, mat, data) VALUES (?, ?, ?, ?, ?)";
+    query->prepare(sql);
+    query->bindValue(0, id_cat);
+    query->bindValue(1, id_sys);
+    query->bindValue(2, mode);
+    query->bindValue(3, mat);
+    query->bindValue(4, jData);
+    if(!query->exec()){
+        msgBox.setText("Ошибка вставки категории на ковер " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return -1;
+    }
+    return query->lastInsertId().toInt();
+}
+
+void DataBase::writeCommonPlace(int id_athlet, QString place)
+{
+    QMessageBox msgBox;
+    QString sql("UPDATE sportsmen SET place = ? WHERE id = ?");
+    query->prepare(sql);
+    query->bindValue(0, place);
+    query->bindValue(1, id_athlet);
+    if(!query->exec()){
+        msgBox.setText("Ошибка чтения спортсмена " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+    }
 }

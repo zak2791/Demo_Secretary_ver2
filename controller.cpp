@@ -8,13 +8,15 @@
 Controller::Controller(QObject* parent) : QObject(parent) {
     add = new AddingAthletes;
     base = new DataBase;
-    main_window = static_cast<MainWindow*>(parent);
+    connect(this, &Controller::sigAddCategoryOnMat, base, &DataBase::createCategoryOnMat);
 }
 
 Controller::~Controller()
 {
     delete add;
     delete base;
+    foreach (auto each, lSystem)
+        delete each;
 }
 
 void Controller::createCompetition()
@@ -31,10 +33,13 @@ void Controller::createCompetition()
     }
 }
 
-void Controller::openCompetition()
+void Controller::openCompetition(QString name)
 {
+    if(name != "")
+        currentBase = name + ".db";
     foreach (auto each, lSystem)
         delete each;
+    lSystem.clear();
     QList<std::tuple<int, QString, QString, QString>> lTpl;
     QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> tpl = base->openBase(currentBase);
     foreach(auto each, tpl){
@@ -47,15 +52,18 @@ void Controller::openCompetition()
         QString age = std::get<6>(each);
         QString weight = std::get<7>(each);
 
-        CompetitionSystem* CS = new System_0(id, id_system, status, lA, data, category, age, weight);
-
-        lSystem.append(CS);
+        if(id_system == 0){
+            CompetitionSystem* CS = new System_0(id, id_system, status, lA, data, category, age, weight);
+            connect(CS, &CompetitionSystem::sigSaveData, base, &DataBase::writeData);
+            connect(CS, &CompetitionSystem::sigSendOnMat, this, &Controller::sendOnMat);
+            lSystem.append(CS);
+        }
 
         lTpl.append(std::tuple(id, category, age, weight));
 
     }
 
-    main_window->setControlPanel(lTpl);
+    emit sigSetControlPanel(lTpl);
 }
 
 void Controller::addAthletes()
@@ -66,12 +74,26 @@ void Controller::addAthletes()
         emit sigCompetition("");
     });
 
-    // connect(ui->aAdd, &QAction::triggered, this, [this](){
-    //     qDebug()<<"aAdd";
-
-    //     add->show();
-    // });
-
     add->show();
 
 }
+
+void Controller::sendOnMat(int id, int id_system, int mode , QString category, QString age, QString weight, QVariant data)
+{
+    int mat = emit sigRequestMat();
+
+    int id_onMat = emit sigAddCategoryOnMat(id, id_system, mode, mat, data);
+    CategoryOnMat* cat = new CategoryOnMat(id_onMat, id, id_system, mode, category, age, weight, data);
+    lCategoryOnMat1.append(cat);
+    emit sigIsertCategoryOnMat(cat);
+    qDebug()<<"id_onMat = "<<id_onMat;
+}
+
+CompetitionSystem *Controller::getCategory(int id)
+{
+    foreach(auto each, lSystem)
+        if(each->getId() == id)
+            return each;
+    return nullptr;
+}
+

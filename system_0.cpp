@@ -10,8 +10,13 @@ System_0::System_0(int _id,
                    QString w)  :
     CompetitionSystem(_id, _id_system, _status, list, _data, c, a, w){
 
-    final_0 final_data = _data.value<final_0>();
-    commonRoundItem = new System_0_Common(lAthlete, final_data.flag_on_mat_common);
+    final_0 final_data = _data.value<final_0>();        //?????????????????????????????????????error need json!!!!
+    bool status;
+    if(_status == 1 || _status == 3 || _status == 7)
+        status = true;
+    else
+        status = false;
+    commonRoundItem = new System_0_Common(lAthlete, status);
 
     QList<athlete> lA{athlete(), athlete(), athlete(), athlete()};
     foreach(auto each, lAthlete){
@@ -53,8 +58,9 @@ System_0::System_0(int _id,
 
     finalItem->moveBy(0, commonRoundItem->getHeight() + 80);
 
-    connect(commonRoundItem, SIGNAL(sigPlace(QList<athlete>)), this, SLOT(savePlace(QList<athlete>)));
+    connect(commonRoundItem, SIGNAL(sigPlace(int, QString)), this, SLOT(savePlace(int, QString)));
     connect(commonRoundItem, SIGNAL(sigPlace(QList<athlete>)), finalItem, SLOT(setAthletes(QList<athlete>)));
+    connect(commonRoundItem, &System_0_Common::sigOnMAt, this, &System_0::sendOnMat);
 }
 
 void System_0::setRates(int _id, int _mode, QVariant _rates)
@@ -67,13 +73,14 @@ void System_0::setRates(int _id, int _mode, QVariant _rates)
     }
 }
 
-void System_0::savePlace(QList<athlete> list)
+void System_0::savePlace(int id_athlete, QString place)
 {
-    qDebug()<<list.count();
-    foreach(auto each, list){
-        qDebug()<<each.name;
-    }
-    //emit sigSaveData(id, id_system, 0, {QString::number(_id), str});
+    emit sigSaveData(id, id_system, 0, QVariant::fromValue(std::tuple<int, QString>{id_athlete, place}));
+}
+
+void System_0::sendOnMat(int mode, QVariant data)
+{
+    emit sigSendOnMat(id, id_system, mode, category, age, weight, data);
 }
 
 void System_0::cancelSendOnMat(int id, int mode)

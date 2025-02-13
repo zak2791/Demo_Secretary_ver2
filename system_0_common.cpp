@@ -1,4 +1,5 @@
 #include "system_0_common.h"
+#include "qjsonarray.h"
 
 #include <QPainter>
 #include <QComboBox>
@@ -6,6 +7,7 @@
 System_0_Common::System_0_Common(QList<athlete> list, bool onMat){
     lAthletes = list;
     flagOnMat = onMat;
+    QJsonArray jArr;
     for(int i = 0; i < list.count(); i++){
         lRectDraw.append(QRect(  0, i * 40, 40, 40));
         lRectName.append(QRect( 40, i * 40, 100, 40));
@@ -23,7 +25,17 @@ System_0_Common::System_0_Common(QList<athlete> list, bool onMat){
         hoverPlaceFlags.append(false);
         if(lAthletes[i].place != "")
             currentListPlaces.append(lAthletes[i].place);
+        QJsonObject jObj;
+        jObj.insert("id", lAthletes.at(i).id);
+        jObj.insert("name", lAthletes.at(i).name);
+        jObj.insert("team", lAthletes.at(i).team);
+        jObj.insert("range", lAthletes.at(i).range);
+        jArr.append(jObj);
     }
+
+    data = jArr.toVariantList();
+
+    rectDraw = QRect(0, 0, 40, 40 * list.count());
 
     menu = new QMenu;
     setAcceptHoverEvents(true);
@@ -80,6 +92,10 @@ void System_0_Common::paint(QPainter *painter,
 
     painter->setFont(f);
     for(int i = 0; i < lAthletes.count(); i++){
+        if(flagOnMat)
+            painter->fillRect(lRectDraw.at(i), "lightgreen");
+        else if(flagHoverDraw)
+            painter->fillRect(lRectDraw.at(i), "lightgray");
         painter->drawRect(lRectDraw.at(i));
         painter->drawText(lRectDraw.at(i), Qt::AlignVCenter | Qt::AlignHCenter, QString::number(i + 1));
         painter->drawRect(lRectName.at(i));
@@ -135,7 +151,8 @@ void System_0_Common::mousePressEvent(QGraphicsSceneMouseEvent* e){
                 else if(each.place == "4")
                     lA[3] = each;
             }
-            emit sigPlace(lA);
+            emit sigPlace(lA);                                  //установка спортсменов в финальной части
+            emit sigPlace(lAthletes[index].id, act->text());    //запись в базу
             update();
         }
         return;
@@ -160,6 +177,13 @@ void System_0_Common::mousePressEvent(QGraphicsSceneMouseEvent* e){
         });
         return;
     }
+    if(flagHoverDraw && !flagOnMat){
+        flagOnMat = true;
+
+        emit sigOnMAt(0,        //режим - общий круг
+                      data
+                      );
+    }
 }
 
 void System_0_Common::hoverMoveEvent(QGraphicsSceneHoverEvent* e)
@@ -174,9 +198,10 @@ void System_0_Common::hoverMoveEvent(QGraphicsSceneHoverEvent* e)
         }
     }
 
-
-
-
+    if(rectDraw.contains(x, y))
+        flagHoverDraw = true;
+    else
+        flagHoverDraw = false;
 
     update();
 }

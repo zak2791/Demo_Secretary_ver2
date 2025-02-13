@@ -16,7 +16,11 @@ public:
                       QString c,
                       QString a,
                       QString w);
-    //bool isCategory(QString c, QString a, QString w){return c == category && a == age && w == weight;}
+
+    int getId(void){return id;}
+
+private slots:
+    virtual void sendOnMat(int, QVariant) = 0;
 
 public slots:
 
@@ -41,6 +45,8 @@ public slots:
                           QVariant           //оценки
                           ) = 0;
 
+
+
 protected:
     int id;                     //id категории
     int id_system;              //система проведения соревнований
@@ -52,10 +58,14 @@ protected:
     QString age;
     QString weight;
 
+
 signals:
     void sigSendOnMat(int,
                       int,
                       int,
+                      QString,           //категория
+                      QString,           //возраст
+                      QString,           //вес
                       QVariant
                       );
 

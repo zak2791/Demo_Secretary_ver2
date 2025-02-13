@@ -46,17 +46,51 @@
         </item>
        </layout>
       </item>
-      <item>
-       <widget class="QGraphicsView" name="gViewOnMat">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
      </layout>
+    </item>
+    <item row="0" column="1">
+     <widget class="QTabWidget" name="tabMats">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tabMat1">
+       <attribute name="title">
+        <string>Ковёр 1</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="lwMat1"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabMat2">
+       <attribute name="title">
+        <string>Ковёр 2</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="lwMat2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabMat3">
+       <attribute name="title">
+        <string>Ковер 3</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QListWidget" name="lwMat3"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -73,8 +107,13 @@
     <property name="title">
      <string>Соревнования</string>
     </property>
+    <widget class="QMenu" name="mOpen">
+     <property name="title">
+      <string>Открыть</string>
+     </property>
+    </widget>
     <addaction name="aCreate"/>
-    <addaction name="aOpen"/>
+    <addaction name="mOpen"/>
     <addaction name="aExit"/>
    </widget>
    <widget class="QMenu" name="mAthletes">
@@ -92,11 +131,6 @@
     <string>Создать</string>
    </property>
   </action>
-  <action name="aOpen">
-   <property name="text">
-    <string>Открыть</string>
-   </property>
-  </action>
   <action name="aExit">
    <property name="text">
     <string>Выход</string>
@@ -110,7 +144,18 @@
     <string>Добавить из буфера обмена</string>
    </property>
   </action>
+  <action name="actiondfg">
+   <property name="text">
+    <string>dfg</string>
+   </property>
+  </action>
  </widget>
+ <tabstops>
+  <tabstop>gViewMain</tabstop>
+  <tabstop>tabMats</tabstop>
+  <tabstop>lwMat3</tabstop>
+  <tabstop>lwMat2</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

@@ -23,9 +23,20 @@ public:
                      >> openBase(QString);
     bool addCategories(QList<QStringList>);
 
+public slots:
+    void writeData(int,                         //id категории
+                   int,                         //id system
+                   int,                         //mode (0-сохранение места общего круга)
+                   QVariant                     //данные
+                   );
+
+    int createCategoryOnMat(int, int, int, int/*mat*/, QVariant);
+
 private:
     QSqlDatabase db;
     QSqlQuery* query;
+
+    void writeCommonPlace(int, QString);        //запись места в общем круге
 
 };
 

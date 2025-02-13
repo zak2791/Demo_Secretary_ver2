@@ -4,24 +4,6 @@
 #include <QWidget>
 #include <QRadioButton>
 
-struct age{
-    QString name;
-    QString current_weight;
-    QList<QString> weights;
-};
-
-struct category{
-    QString name;
-    QString current_age;
-    QList<age> ages;
-};
-
-struct category_age{
-    QString _age;
-    QString _category;
-    QString weight;
-};
-
 namespace Ui {
 class CategoryControlPanel;
 }
@@ -34,18 +16,19 @@ public:
     explicit CategoryControlPanel(QList<std::tuple<int, QString, QString, QString>>,
                                   QWidget *parent = nullptr);
     ~CategoryControlPanel();
+    int getId(void);
 
 private:
     Ui::CategoryControlPanel *ui;
-    QList<QRadioButton*> lRbCat;
-    QList<QRadioButton*> lRbAge;
-    QList<QRadioButton*> lRbWeight;
+
     QString currentCategory;
     QString currentAge;
-    QString currentWeight;
+
     QList<std::tuple<int, QString, QString, QString>> tWeights;
-    QMap<QString, int> currAge;
-    QMap<QString, int> currWeight;
+    QMap<QString, QString> currAge;                                 //key -> "category"
+    QMap<QString, QString> currWeight;                              //key -> "category:age"
+    int getId(QString, QString, QString);
+
 
 private slots:
     void slotRbCategory(bool);
@@ -53,7 +36,7 @@ private slots:
     void slotRbWeight(bool);
 
 signals:
-    void sigChoosingCategory(QString, QString, QString);
+    void sigChoosingCategory(int);
 };
 
 #endif // CATEGORYCONTROLPANEL_H

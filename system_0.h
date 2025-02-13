@@ -37,14 +37,28 @@ public slots:
 private slots:
     void savePlace(//int,     //id спортсмена
                    //QString  //место
-                    QList<athlete>
-                   );
+                    int id
+                   , QString place);
+    virtual void sendOnMat(int, QVariant);
 
 private:
     System_0_Common* commonRoundItem;
     System_0_Final* finalItem;
 
 
+signals:
+    ///////////////////////////////////////
+    /// \brief sigOnMat                 ///
+    /// сигнал отправки данных на ковер ///
+    ///////////////////////////////////////
+    // void sigOnMat(int,          //id категории
+    //               int,          //id системы проведения
+    //               int,          //режим
+    //               QString,
+    //               QString,
+    //               QString,
+    //               QVariant      //данные
+    //               );
     //virtual void sendOnMat(int, int, QList<QString>);
     //QList<athlete> lAthlete;
 };
