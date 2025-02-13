@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     controller = new Controller(this);
     connect(ui->aCreate,    &QAction::triggered,         controller, &::Controller::createCompetition);
     connect(ui->aAdd,       &QAction::triggered,         controller, &::Controller::addAthletes);
+
     connect(controller,     &Controller:: sigCompetition, [actAdd, this](QString s) {
         if(s == "")
             actAdd->setEnabled(false);
@@ -32,24 +33,45 @@ MainWindow::MainWindow(QWidget *parent)
             lblStatus.setText(s.left(s.lastIndexOf(".")).replace("_", " "));
         }
     });
+
     connect(controller, SIGNAL(sigSetControlPanel(QList<std::tuple<int,QString,QString,QString> >)), this,
             SLOT(setControlPanel(QList<std::tuple<int,QString,QString,QString> >)));
-    connect(controller, &Controller::sigRequestMat, [this](){
-        if(ui->tabMats->currentWidget()->objectName() == "tabMat1")
-            return 0;
-        else if(ui->tabMats->currentWidget()->objectName() == "tabMat2")
-            return 1;
-        else
-            return 2;
-    });
 
     connect(controller, &Controller::sigIsertCategoryOnMat, this, &MainWindow::insertCategoryOnMat);
+
+    connect(controller, &Controller::sigRemoveCategoryFromMat, [this](int id, int mat){
+        QListWidget* lWidget;
+        if(mat == 0){
+            lWidget = listWidgetMat1;
+        }
+        else if(mat == 1){
+            lWidget = listWidgetMat2;
+        }
+        else{
+            lWidget = listWidgetMat3;
+        }
+        for(int i = 0; i < lWidget->count(); i++){
+            if(lWidget->item(i)->data(Qt::UserRole) == id){
+                delete lWidget->item(i);
+            }
+        }
+    ;});
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+int MainWindow::getMat()
+{
+    if(ui->tabMats->currentWidget()->objectName() == "tabMat1")
+        return 0;
+    else if(ui->tabMats->currentWidget()->objectName() == "tabMat2")
+        return 1;
+    else
+        return 2;
 }
 
 void MainWindow::setControlPanel(QList<std::tuple<int, QString, QString, QString>> list)
@@ -73,22 +95,18 @@ void MainWindow::setCategory(int id)
 
 void MainWindow::insertCategoryOnMat(CategoryOnMat* cat)
 {
-    QListWidgetItem* item;
+    QListWidgetItem* item  = new QListWidgetItem();
+    item->setSizeHint(cat->sizeHint());
+    item->setData(Qt::UserRole, cat->getId());
     if(ui->tabMats->currentWidget()->objectName() == "tabMat1"){
-        item = new QListWidgetItem();
-        item->setSizeHint(cat->sizeHint());
         listWidgetMat1->addItem(item);
         listWidgetMat1->setItemWidget(item, cat);
     }
     else if(ui->tabMats->currentWidget()->objectName() == "tabMat2"){
-        item = new QListWidgetItem(listWidgetMat2);
-        item->setSizeHint(cat->sizeHint());
         listWidgetMat2->addItem(item);
         listWidgetMat2->setItemWidget(item, cat);
     }
     else{
-        item = new QListWidgetItem(listWidgetMat3);
-        item->setSizeHint(cat->sizeHint());
         listWidgetMat3->addItem(item);
         listWidgetMat3->setItemWidget(item, cat);
     }

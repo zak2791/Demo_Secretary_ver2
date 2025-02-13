@@ -221,6 +221,54 @@ int DataBase::createCategoryOnMat(int id_cat, int id_sys, int mode, int mat, QVa
     return query->lastInsertId().toInt();
 }
 
+QList<int> DataBase::deleteCategoryFromMat(int id_category_on_mat)
+{
+    QMessageBox msgBox;
+    QString sql("SELECT id_category, id_system, mode FROM categories_on_mats WHERE id = %1 ;");
+    sql = sql.arg(QString::number(id_category_on_mat));
+    qDebug()<<sql;
+    if(!query->exec(sql)){
+        msgBox.setText("Ошибка чтения categories_on_mats " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return QList<int>();
+    }
+    if(!query->next()){
+        msgBox.setText("Ошибка чтения id_category, mode FROM categories_on_mats " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return QList<int>();
+    }
+    int id_category = query->value(0).toInt();
+    int id_system = query->value(1).toInt();
+    int mode = query->value(2).toInt();
+    sql = "DELETE FROM categories_on_mats WHERE id = " + QString::number(id_category_on_mat) + ";";
+    if(!query->exec(sql)){
+        msgBox.setText("Ошибка удаления из categories_on_mats " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return QList<int>();
+    }
+    QString status = 0;
+    if(id_system == 0){
+        if(mode == 0)           //первый круг
+            status = "1";
+        else if(mode == 1)      //полуфиналы
+            status = "2";
+        else                    //финалы
+            status = "4";
+    }
+    sql = "UPDATE categories SET status = status - '%1' WHERE id = '%2';";
+    sql = sql.arg(status).arg(QString::number(id_category));
+    if(!query->exec(sql)){
+        msgBox.setText("Ошибка обновления categories " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return QList<int>();
+    }
+    return {id_category, mode};
+}
+
 void DataBase::writeCommonPlace(int id_athlet, QString place)
 {
     QMessageBox msgBox;

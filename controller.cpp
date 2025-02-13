@@ -1,14 +1,16 @@
 #include "controller.h"
+#include "mainwindow.h"
 #include "qdebug.h"
 #include "jsonconverter.h"
 
+#include "qmessagebox.h"
 #include "system_0.h"
 #include "addcompetition.h"
 
 Controller::Controller(QObject* parent) : QObject(parent) {
+    p = parent;
     add = new AddingAthletes;
     base = new DataBase;
-    connect(this, &Controller::sigAddCategoryOnMat, base, &DataBase::createCategoryOnMat);
 }
 
 Controller::~Controller()
@@ -56,6 +58,7 @@ void Controller::openCompetition(QString name)
             CompetitionSystem* CS = new System_0(id, id_system, status, lA, data, category, age, weight);
             connect(CS, &CompetitionSystem::sigSaveData, base, &DataBase::writeData);
             connect(CS, &CompetitionSystem::sigSendOnMat, this, &Controller::sendOnMat);
+            connect(this, &Controller::sigCancelSendOnMat, CS, &CompetitionSystem::cancelSendOnMat);
             lSystem.append(CS);
         }
 
@@ -80,20 +83,55 @@ void Controller::addAthletes()
 
 void Controller::sendOnMat(int id, int id_system, int mode , QString category, QString age, QString weight, QVariant data)
 {
-    int mat = emit sigRequestMat();
-
-    int id_onMat = emit sigAddCategoryOnMat(id, id_system, mode, mat, data);
+    int mat = static_cast<MainWindow*>(p)->getMat();
+    int id_onMat = base->createCategoryOnMat(id, id_system, mode, mat, data);
     CategoryOnMat* cat = new CategoryOnMat(id_onMat, id, id_system, mode, category, age, weight, data);
-    lCategoryOnMat1.append(cat);
+    connect(cat, &CategoryOnMat::sigRemoveFromMat, this, &Controller::removeCategoryFromMat);
+
+    if(mat == 0)
+        lCategoryOnMat1.append(cat);
+    else if(mat == 1)
+        lCategoryOnMat2.append(cat);
+    else
+        lCategoryOnMat3.append(cat);
     emit sigIsertCategoryOnMat(cat);
-    qDebug()<<"id_onMat = "<<id_onMat;
+}
+
+void Controller::removeCategoryFromMat(int id)
+{
+    QMessageBox msgBox;
+    QList<int> lI = base->deleteCategoryFromMat(id);
+    qDebug()<<"lI.count() = "<<lI.count()<<lI;
+    if(lI.count() == 2)
+        emit sigCancelSendOnMat(lI.at(0), lI.at(1));
+    else{
+        msgBox.setText("Ошибка отмены отправки на ковёр");
+        msgBox.exec();
+    }
+    int mat = static_cast<MainWindow*>(p)->getMat();
+    QList<CategoryOnMat*> list;
+    if(mat == 0)
+        list = lCategoryOnMat1;
+    else if(mat == 1)
+        list = lCategoryOnMat2;
+    else
+        list = lCategoryOnMat3;
+    for(int i = 0; i <  list.count(); i++){
+        if(list.at(i)->getId() == id){
+            delete list[i];
+            list.removeAt(i);
+            emit sigRemoveCategoryFromMat(id, mat);
+            break;
+        }
+    }
+
 }
 
 CompetitionSystem *Controller::getCategory(int id)
 {
     foreach(auto each, lSystem)
-        if(each->getId() == id)
-            return each;
+    if(each->getId() == id)
+        return each;
     return nullptr;
 }
 

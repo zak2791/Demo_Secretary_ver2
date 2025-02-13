@@ -83,7 +83,11 @@ void System_0::sendOnMat(int mode, QVariant data)
     emit sigSendOnMat(id, id_system, mode, category, age, weight, data);
 }
 
-void System_0::cancelSendOnMat(int id, int mode)
+void System_0::cancelSendOnMat(int id_, int mode)
 {
-    //emit sigSendOnMat(id, mode, list);
+    if(id == id_){
+        if(mode == 0){
+            commonRoundItem->clearFlagOnMat();
+        }
+    }
 }

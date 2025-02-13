@@ -59,7 +59,8 @@ CategoryOnMat::CategoryOnMat(int id_,
     LEDWidget* LedInWork = new LEDWidget(this);
     LEDWidget* LedChangeRead= new LEDWidget(this);
 
-    QPushButton* buttonCancel = new QPushButton("Убрать с ковра", this);
+    QPushButton* btnRemove = new QPushButton("Убрать с ковра", this);
+    connect(btnRemove, &QPushButton::clicked, [this](){emit sigRemoveFromMat(id);});
     QPushButton* buttonRead = new QPushButton("Сбросить статус", this);
 
     hbThirdRow->addWidget(new QLabel("Доставлен на ковер", this));
@@ -79,7 +80,7 @@ CategoryOnMat::CategoryOnMat(int id_,
     lay->setAlignment(LedChangeRead, Qt::AlignVCenter);
 
     hbThirdRow->addStretch();
-    hbThirdRow->addWidget(buttonCancel);
+    hbThirdRow->addWidget(btnRemove);
 
     layout->addLayout(hbFirstRow);
     layout->addWidget(lblInfo);

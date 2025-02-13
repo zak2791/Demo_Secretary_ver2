@@ -22,6 +22,8 @@ public:
                QString
                      >> openBase(QString);
     bool addCategories(QList<QStringList>);
+    int createCategoryOnMat(int, int, int, int/*mat*/, QVariant);
+    QList<int> deleteCategoryFromMat(int);
 
 public slots:
     void writeData(int,                         //id категории
@@ -30,7 +32,7 @@ public slots:
                    QVariant                     //данные
                    );
 
-    int createCategoryOnMat(int, int, int, int/*mat*/, QVariant);
+
 
 private:
     QSqlDatabase db;

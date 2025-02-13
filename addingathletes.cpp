@@ -15,7 +15,7 @@ AddingAthletes::AddingAthletes() : QTreeWidget()  {
 
     QAxObject* excel = new QAxObject("Excel.Application", 0);
     QAxObject* workbooks = excel->querySubObject("Workbooks");
-    QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", "C:/Users/Colorfull/Desktop/test.xlsx");
+    QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", "C:/Users/Gigabyte/Desktop/test.xlsx");
     QAxObject* sheets = workbook->querySubObject("Sheets");
     QAxObject *StatSheet = sheets->querySubObject( "Item(const QVariant&)", QVariant(1) );
 

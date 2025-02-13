@@ -22,6 +22,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    int getMat(void);
 
 private slots:
     void setControlPanel(QList<std::tuple<int, QString, QString, QString>>);

@@ -9,6 +9,7 @@ class CategoryOnMat : public QFrame
     Q_OBJECT
 public:
     CategoryOnMat(int, int, int, int, QString, QString, QString, QVariant, QWidget* parent = nullptr);
+    int getId(void){return id;}
 
 private:
     int id;
@@ -23,6 +24,9 @@ private:
     QLabel* lblWeight;
     QLabel* lblInfo;
     QVariant vData;
+
+signals:
+    void sigRemoveFromMat(int);
 };
 
 #endif // CATEGORYONMAT_H

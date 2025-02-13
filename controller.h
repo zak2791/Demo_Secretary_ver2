@@ -29,9 +29,11 @@ private:
     QList<CategoryOnMat*> lCategoryOnMat2;
     QList<CategoryOnMat*> lCategoryOnMat3;
     QString currentBase;
+    QObject* p;
 
 private slots:
     void sendOnMat(int, int, int, QString, QString, QString, QVariant);
+    void removeCategoryFromMat(int);
 
 signals:
     ///////////////////////////////////////////////////////////
@@ -45,17 +47,9 @@ signals:
 
     void sigSetControlPanel(QList<std::tuple<int, QString, QString, QString>>);
 
-    //void sigCategory(CompetitionSystem*);
-    int sigAddCategoryOnMat(int,        //id категории
-                            int,        //id_system
-                            int,        //mode
-                            int,        //mat
-                            QVariant    //data
-                            );
-
-    int sigRequestMat(void);
     void sigIsertCategoryOnMat(CategoryOnMat*);
-
+    void sigRemoveCategoryFromMat(int/*id*/, int/*mat*/);
+    void sigCancelSendOnMat(int, int);
 };
 
 #endif // CONTROLLER_H

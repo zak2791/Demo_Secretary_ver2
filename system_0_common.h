@@ -13,6 +13,7 @@ public:
     System_0_Common(QList<athlete>, bool);
     int getHeight(void);
     void setRates(QList<rates>);
+    void clearFlagOnMat(void){flagOnMat = false; update();}
 
 private:
     QList<athlete> lAthletes;
