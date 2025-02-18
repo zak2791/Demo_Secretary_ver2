@@ -6,16 +6,17 @@
 #include "qmessagebox.h"
 #include "system_0.h"
 #include "addcompetition.h"
+#include "addingathletes.h"
 
 Controller::Controller(QObject* parent) : QObject(parent) {
     p = parent;
-    add = new AddingAthletes;
+    //add = new AddingAthletes;
     base = new DataBase;
 }
 
 Controller::~Controller()
 {
-    delete add;
+    //delete add;
     delete base;
     foreach (auto each, lSystem)
         delete each;
@@ -25,20 +26,42 @@ void Controller::createCompetition()
 {
     AddCompetition* add = new AddCompetition();
     QString base_name;
-    connect(add, &AddCompetition::sigNewBase, [&base_name](QString name){base_name = name;});
+    connect(add, &AddCompetition::sigNewBase, [&](QString name){
+        base_name = name;
+        foreach (auto each, lSystem)
+            delete each;
+        lSystem.clear();
+        foreach (auto each, lCategoryOnMat1)
+            delete each;
+        lCategoryOnMat1.clear();
+
+        foreach (auto each, lCategoryOnMat2)
+            delete each;
+        lCategoryOnMat2.clear();
+
+        foreach (auto each, lCategoryOnMat3)
+            delete each;
+        lCategoryOnMat3.clear();
+        emit sigClearMats();
+    });
     int ret = add->exec();
     if(ret == 1){
         if(base->createBase(base_name)){
             currentBase = base_name;
-            emit sigCompetition(base_name);
+            emit sigCompetition(base_name, true);
         }
     }
+
+    emit sigRemovePanel();
 }
 
 void Controller::openCompetition(QString name)
 {
     if(name != "")
         currentBase = name + ".db";
+    ///////////////////////////
+    /// заполняем категории ///
+    ///////////////////////////
     foreach (auto each, lSystem)
         delete each;
     lSystem.clear();
@@ -61,20 +84,65 @@ void Controller::openCompetition(QString name)
             connect(this, &Controller::sigCancelSendOnMat, CS, &CompetitionSystem::cancelSendOnMat);
             lSystem.append(CS);
         }
-
         lTpl.append(std::tuple(id, category, age, weight));
+    }
 
+    /////////////////////////////////////
+    /// заполняем категории на коврах ///
+    /////////////////////////////////////
+    foreach (auto each, lCategoryOnMat1)
+        delete each;
+    lCategoryOnMat1.clear();
+
+    foreach (auto each, lCategoryOnMat2)
+        delete each;
+    lCategoryOnMat2.clear();
+
+    foreach (auto each, lCategoryOnMat3)
+        delete each;
+    lCategoryOnMat3.clear();
+
+    emit sigClearMats();
+
+    QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>> lCatOnMat = base->readCategoryOnMats();
+    foreach(auto each, lCatOnMat){
+        int mat = std::get<4>(each);
+        qDebug()<<"mat = "<<mat;
+        CategoryOnMat* cat = new CategoryOnMat(std::get<0>(each),   //id_onMat
+                                               std::get<1>(each),   //id
+                                               std::get<2>(each),   //id_system
+                                               std::get<3>(each),   //mode
+                                               std::get<6>(each),   //category
+                                               std::get<7>(each),   //age
+                                               std::get<8>(each),   //weight
+                                               std::get<5>(each)    //data
+                                               );
+        connect(cat, &CategoryOnMat::sigRemoveFromMat, this, &Controller::removeCategoryFromMat);
+        connect(cat, &CategoryOnMat::sigClick, static_cast<MainWindow*>(p), &MainWindow::clickCategoryOnMat);
+        if(mat == 0)
+            lCategoryOnMat1.append(cat);
+        else if(mat == 1)
+            lCategoryOnMat2.append(cat);
+        else
+            lCategoryOnMat3.append(cat);
+        emit sigIsertCategoryOnMatFromBase(mat, cat);
     }
 
     emit sigSetControlPanel(lTpl);
+    if(lSystem.isEmpty())
+        emit sigCompetition(currentBase, true);
+    else
+        emit sigCompetition(currentBase, false);
 }
 
 void Controller::addAthletes()
 {
+    AddingAthletes* add = new AddingAthletes;
+
     connect(add, &AddingAthletes::sigAddAthletes, this, [this](QList<QStringList> l){
         base->addCategories(l);
         openCompetition();
-        emit sigCompetition("");
+        //emit sigCompetition("");
     });
 
     add->show();
@@ -87,7 +155,7 @@ void Controller::sendOnMat(int id, int id_system, int mode , QString category, Q
     int id_onMat = base->createCategoryOnMat(id, id_system, mode, mat, data);
     CategoryOnMat* cat = new CategoryOnMat(id_onMat, id, id_system, mode, category, age, weight, data);
     connect(cat, &CategoryOnMat::sigRemoveFromMat, this, &Controller::removeCategoryFromMat);
-
+    connect(cat, &CategoryOnMat::sigClick, static_cast<MainWindow*>(p), &MainWindow::clickCategoryOnMat);
     if(mat == 0)
         lCategoryOnMat1.append(cat);
     else if(mat == 1)
@@ -101,7 +169,6 @@ void Controller::removeCategoryFromMat(int id)
 {
     QMessageBox msgBox;
     QList<int> lI = base->deleteCategoryFromMat(id);
-    qDebug()<<"lI.count() = "<<lI.count()<<lI;
     if(lI.count() == 2)
         emit sigCancelSendOnMat(lI.at(0), lI.at(1));
     else{
@@ -109,22 +176,36 @@ void Controller::removeCategoryFromMat(int id)
         msgBox.exec();
     }
     int mat = static_cast<MainWindow*>(p)->getMat();
-    QList<CategoryOnMat*> list;
-    if(mat == 0)
-        list = lCategoryOnMat1;
-    else if(mat == 1)
-        list = lCategoryOnMat2;
-    else
-        list = lCategoryOnMat3;
-    for(int i = 0; i <  list.count(); i++){
-        if(list.at(i)->getId() == id){
-            delete list[i];
-            list.removeAt(i);
-            emit sigRemoveCategoryFromMat(id, mat);
-            break;
+    if(mat == 0){
+        for(int i = 0; i <  lCategoryOnMat1.count(); i++){
+            if(lCategoryOnMat1.at(i)->getId() == id){
+                delete lCategoryOnMat1[i];
+                lCategoryOnMat1.removeAt(i);
+                emit sigRemoveCategoryFromMat(id, mat);
+                break;
+            }
         }
     }
-
+    else if(mat == 1){
+        for(int i = 0; i <  lCategoryOnMat2.count(); i++){
+            if(lCategoryOnMat2.at(i)->getId() == id){
+                delete lCategoryOnMat2[i];
+                lCategoryOnMat2.removeAt(i);
+                emit sigRemoveCategoryFromMat(id, mat);
+                break;
+            }
+        }
+    }
+    else{
+        for(int i = 0; i <  lCategoryOnMat3.count(); i++){
+            if(lCategoryOnMat3.at(i)->getId() == id){
+                delete lCategoryOnMat3[i];
+                lCategoryOnMat3.removeAt(i);
+                emit sigRemoveCategoryFromMat(id, mat);
+                break;
+            }
+        }
+    }
 }
 
 CompetitionSystem *Controller::getCategory(int id)

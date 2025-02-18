@@ -125,7 +125,7 @@ bool DataBase::addCategories(QList<QStringList> list)
         QString category = listCategory.at(0);
         QString age      = listCategory.at(1);
         QString weight   = listCategory.at(2);
-        int id_system    = listCategory.at(0).toInt();
+        int id_system    = listCategory.at(3).toInt();
         if(id_system == -1)
             continue;
         query->prepare(sqlCategories);
@@ -281,4 +281,35 @@ void DataBase::writeCommonPlace(int id_athlet, QString place)
         msgBox.exec();
         db.close();
     }
+}
+
+QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString> > DataBase::readCategoryOnMats()
+{
+    QMessageBox msgBox;
+    QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>> lTpl;
+    QString sql("SELECT A.id, A.id_category, A.id_system, A.mode, A.mat, A.data, B.id, B.category, B.age, B.weight FROM categories_on_mats A "
+                "LEFT JOIN "
+                "categories B "
+                "ON B.id = A.id_category;");
+    if(!query->exec(sql)){
+        msgBox.setText("Ошибка чтения таблицы категорий на коврах " + query->lastError().text());
+        qDebug()<<query->lastError().text();
+        msgBox.exec();
+        db.close();
+        return QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>>();
+    }
+    while(query->next()){
+        int id              = query->value(0).toInt();
+        int id_category     = query->value(1).toInt();
+        int id_system       = query->value(2).toInt();
+        int mode            = query->value(3).toInt();
+        int mat             = query->value(4).toInt();
+        QString data        = query->value(5).toString();
+        QString category    = query->value(7).toString();
+        QString age         = query->value(8).toString();
+        QString weight      = query->value(9).toString();
+        lTpl.append(std::tuple<int, int, int, int, int, QString, QString, QString, QString>
+                    (id, id_category, id_system, mode, mat, data, category, age, weight));
+    }
+    return lTpl;
 }

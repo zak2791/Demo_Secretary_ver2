@@ -20,3 +20,4 @@ signals:
 };
 
 #endif // ADDINGATHLETES_H
+

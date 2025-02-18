@@ -35,6 +35,7 @@ CategoryControlPanel::CategoryControlPanel(QList<std::tuple<int, QString, QStrin
 
     foreach(auto each, lCategory){
         btn = new QRadioButton(each);
+        btn->setObjectName(each);
         ui->gbCategory->layout()->addWidget(btn);
         connect(btn, SIGNAL(toggled(bool)), this, SLOT(slotRbCategory(bool)));
         if(each == lCategory.first())
@@ -98,6 +99,10 @@ void CategoryControlPanel::slotRbCategory(bool b)
         currentCategory = static_cast<QRadioButton*>(sender())->text();
 
         qDeleteAll( ui->gbAge->findChildren<QWidget*>() );
+        if(spacerItemAge != nullptr){
+            ui->gbAge->layout()->removeItem(spacerItemAge);
+            delete spacerItemAge;
+        }
 
         foreach(auto each, tWeights){
             QString sCat = std::get<1>(each);
@@ -109,6 +114,7 @@ void CategoryControlPanel::slotRbCategory(bool b)
 
         foreach(auto each, lAge){
             QRadioButton* btn = new QRadioButton(each);
+            btn->setObjectName(each);
             ui->gbAge->layout()->addWidget(btn);
             connect(btn, SIGNAL(toggled(bool)), this, SLOT(slotRbAge(bool)));
             if(currAge.value(currentCategory).isEmpty()){
@@ -122,8 +128,9 @@ void CategoryControlPanel::slotRbCategory(bool b)
                     btn->toggle();
             }
         }
-        QSpacerItem *spacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-        ui->gbAge->layout()->addItem(spacer); // Добавление шпателя в компоновщик
+        spacerItemAge = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        ui->gbAge->layout()->addItem(spacerItemAge); // Добавление шпателя в компоновщик
     }
 }
 
@@ -136,6 +143,10 @@ void CategoryControlPanel::slotRbAge(bool b)
         QStringList lWeight;
 
         qDeleteAll( ui->gbWeight->findChildren<QWidget*>() );
+        if(spacerItemWeight != nullptr){
+            ui->gbWeight->layout()->removeItem(spacerItemWeight);
+            delete spacerItemWeight;
+        }
 
         foreach(auto each, tWeights){
             QString sCat = std::get<1>(each);
@@ -148,6 +159,7 @@ void CategoryControlPanel::slotRbAge(bool b)
 
         foreach(auto each, lWeight){
             QRadioButton* btn = new QRadioButton(each);
+            btn->setObjectName(each);
             ui->gbWeight->layout()->addWidget(btn);
             connect(btn, SIGNAL(toggled(bool)), this, SLOT(slotRbWeight(bool)));
             if(currWeight.value(currentCategory + ":" + currentAge).isEmpty()){
@@ -161,8 +173,8 @@ void CategoryControlPanel::slotRbAge(bool b)
                     btn->toggle();
             }
         }
-        QSpacerItem *spacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-        ui->gbWeight->layout()->addItem(spacer); // Добавление шпателя в компоновщик
+        spacerItemWeight = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        ui->gbWeight->layout()->addItem(spacerItemWeight); // Добавление шпателя в компоновщик
     }
 
 }
@@ -175,4 +187,19 @@ void CategoryControlPanel::slotRbWeight(bool b)
         int id = getId(currentCategory, currentAge, currentWeight);
         emit sigChoosingCategory(id);
     }
+}
+
+void CategoryControlPanel::clickCategoryOnMat(QString c, QString a, QString w)
+{
+    qDebug()<<"click";
+    QRadioButton* btn = ui->gbCategory->findChild<QRadioButton*>(c);
+    btn->setChecked(true);
+    //QThread::msleep(100);
+    btn = ui->gbAge->findChild<QRadioButton*>(a);
+    qDebug()<<btn<<a;
+
+    btn->setChecked(true);
+    btn = ui->gbWeight->findChild<QRadioButton*>(w);
+    qDebug()<<btn;
+    btn->setChecked(true);
 }

@@ -163,7 +163,7 @@ signals:
     /// 0 - полуфиналы              ///
     /// 1 - финалы                  ///
     ///////////////////////////////////
-    void sigSendOnMat(int);
+    void sigOnMAt(int, QVariant/*data*/);
 
 };
 

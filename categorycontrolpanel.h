@@ -1,6 +1,7 @@
 #ifndef CATEGORYCONTROLPANEL_H
 #define CATEGORYCONTROLPANEL_H
 
+#include "qlayoutitem.h"
 #include <QWidget>
 #include <QRadioButton>
 
@@ -28,15 +29,21 @@ private:
     QMap<QString, QString> currAge;                                 //key -> "category"
     QMap<QString, QString> currWeight;                              //key -> "category:age"
     int getId(QString, QString, QString);
+    QSpacerItem* spacerItemAge = nullptr;
+    QSpacerItem* spacerItemWeight = nullptr;
 
+public slots:
+        void clickCategoryOnMat(QString, QString, QString);
 
 private slots:
     void slotRbCategory(bool);
     void slotRbAge(bool);
     void slotRbWeight(bool);
 
+
 signals:
     void sigChoosingCategory(int);
+
 };
 
 #endif // CATEGORYCONTROLPANEL_H

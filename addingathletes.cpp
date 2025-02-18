@@ -3,6 +3,7 @@
 #include <QAxObject>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QFileDialog>
 
 AddingAthletes::AddingAthletes() : QTreeWidget()  {
     QStringList lst;
@@ -13,9 +14,10 @@ AddingAthletes::AddingAthletes() : QTreeWidget()  {
 
     setSortingEnabled(true);
 
+    QString filename = QFileDialog::getOpenFileName(this, tr("Открыть файл"), QDir::currentPath(), tr("Excel Files (*.xlsx)"));
     QAxObject* excel = new QAxObject("Excel.Application", 0);
     QAxObject* workbooks = excel->querySubObject("Workbooks");
-    QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", "C:/Users/Gigabyte/Desktop/test.xlsx");
+    QAxObject* workbook = workbooks->querySubObject("Open(const QString&)", filename);
     QAxObject* sheets = workbook->querySubObject("Sheets");
     QAxObject *StatSheet = sheets->querySubObject( "Item(const QVariant&)", QVariant(1) );
 
@@ -128,7 +130,6 @@ AddingAthletes::AddingAthletes() : QTreeWidget()  {
             }
         }
     }
-
 }
 
 void AddingAthletes::closeEvent(QCloseEvent*)

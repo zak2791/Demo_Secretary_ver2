@@ -55,9 +55,9 @@ CategoryOnMat::CategoryOnMat(int id_,
     hbFirstRow->addStretch();
 
     QHBoxLayout* hbThirdRow = new QHBoxLayout(this);
-    LEDWidget* LedDeliveredOnmat = new LEDWidget(this);
-    LEDWidget* LedInWork = new LEDWidget(this);
-    LEDWidget* LedChangeRead= new LEDWidget(this);
+    LEDWidget* LedDeliveredOnmat = new LEDWidget(0, this);
+    LEDWidget* LedInWork = new LEDWidget(1, this);
+    LEDWidget* LedChangeRead= new LEDWidget(1, this);
 
     QPushButton* btnRemove = new QPushButton("Убрать с ковра", this);
     connect(btnRemove, &QPushButton::clicked, [this](){emit sigRemoveFromMat(id);});
@@ -65,6 +65,8 @@ CategoryOnMat::CategoryOnMat(int id_,
 
     hbThirdRow->addWidget(new QLabel("Доставлен на ковер", this));
     hbThirdRow->addWidget(LedDeliveredOnmat);
+    QPushButton* btnSend = new QPushButton("Отослать на ковёр");
+    hbThirdRow->addWidget(btnSend);
     hbThirdRow->addWidget(lFrame.at(2));
 
     hbThirdRow->addWidget(new QLabel("В работе/отработан", this));
@@ -88,4 +90,9 @@ CategoryOnMat::CategoryOnMat(int id_,
 
     setLayout(layout);
 
+}
+
+void CategoryOnMat::mousePressEvent(QMouseEvent *)
+{
+    emit sigClick(sCategory, sAge, sWeight);
 }

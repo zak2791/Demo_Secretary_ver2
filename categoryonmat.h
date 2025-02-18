@@ -25,8 +25,11 @@ private:
     QLabel* lblInfo;
     QVariant vData;
 
+    virtual void mousePressEvent(QMouseEvent*);
+
 signals:
     void sigRemoveFromMat(int);
+    void sigClick(QString, QString, QString);
 };
 
 #endif // CATEGORYONMAT_H

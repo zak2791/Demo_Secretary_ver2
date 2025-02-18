@@ -7,7 +7,7 @@ class LEDWidget : public QWidget {
     Q_OBJECT
 
 public:
-    LEDWidget(QWidget* parent = nullptr);
+    LEDWidget(int, QWidget* parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -15,10 +15,13 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private slots:
-    void toggleLED(void);
+    void setStatus(int);
 
 private:
-    bool m_ledOn; // Состояние светодиода (включен/выключен)
+    int status;    // Состояние светодиода 0, 1
+    int mode;       // Режим: 0 - серый - зелёный
+                    //        1 - серый - красный
+                    //        2 - красный - зелёный
 
 };
 

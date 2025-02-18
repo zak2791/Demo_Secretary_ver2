@@ -51,6 +51,7 @@ signals:
     /// \brief sigOnMat                 ///
     /// сигнал отправки данных на ковер ///
     ///////////////////////////////////////
+    void sigOnMAt(int, QVariant);
     // void sigOnMat(int,          //id категории
     //               int,          //id системы проведения
     //               int,          //режим

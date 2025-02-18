@@ -21,6 +21,7 @@ SOURCES += \
     ledwidget.cpp \
     main.cpp \
     mainwindow.cpp \
+    matsstatus.cpp \
     system_0.cpp \
     system_0_common.cpp \
     system_0_final.cpp
@@ -38,6 +39,7 @@ HEADERS += \
     ledwidget.h \
     main.h \
     mainwindow.h \
+    matsstatus.h \
     system_0.h \
     system_0_common.h \
     system_0_final.h

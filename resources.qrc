@@ -6,5 +6,9 @@
         <file>images/win_gray.png</file>
         <file>images/win_hover.png</file>
         <file>images/win_gray_hover.png</file>
+        <file>images/close_envelope.png</file>
+        <file>images/close_envelope_red.png</file>
+        <file>images/envelope_gray.png</file>
+        <file>images/envelope_red.png</file>
     </qresource>
 </RCC>

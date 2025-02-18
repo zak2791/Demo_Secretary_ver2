@@ -1,4 +1,5 @@
 #include "system_0_final.h"
+#include "qjsonarray.h"
 
 #include <QPainter>
 
@@ -70,50 +71,46 @@ QRectF System_0_Final::boundingRect() const
 }
 
 void System_0_Final::paint(QPainter *painter,
-                                 const QStyleOptionGraphicsItem*,
-                                 QWidget*)
+                           const QStyleOptionGraphicsItem*,
+                           QWidget*)
 {
     if(data_final_0.flag_on_mat_half){
-        painter->fillRect(rectHalf1, "gray");
-        painter->fillRect(rectHalf3, "gray");
-        painter->fillRect(rectHalf2, "gray");
-        painter->fillRect(rectHalf4, "gray");
+        painter->fillRect(rectHalf1, "lightgreen");
+        //painter->drawRect(rectHalf1);
+        painter->fillRect(rectHalf3, "lightgreen");
+        //painter->drawRect(rectHalf3);
+        painter->fillRect(rectHalf2, "lightgreen");
+        //painter->drawRect(rectHalf2);
+        painter->fillRect(rectHalf4, "lightgreen");
+        //painter->drawRect(rectHalf4);
     }
-    else{
-        if(flagHoverHalf){
-            painter->fillRect(rectHalf1, "darkgray");
-            painter->fillRect(rectHalf3, "darkgray");
-            painter->fillRect(rectHalf2, "darkgray");
-            painter->fillRect(rectHalf4, "darkgray");
-        }
-        else{
-            painter->drawRect(rectHalf1);
-            painter->drawRect(rectHalf3);
-            painter->drawRect(rectHalf2);
-            painter->drawRect(rectHalf4);
-        }
+    else if(flagHoverHalf){
+        painter->fillRect(rectHalf1, "lightgray");
+        painter->fillRect(rectHalf3, "lightgray");
+        painter->fillRect(rectHalf2, "lightgray");
+        painter->fillRect(rectHalf4, "lightgray");
     }
+    painter->drawRect(rectHalf1);
+    painter->drawRect(rectHalf3);
+    painter->drawRect(rectHalf2);
+    painter->drawRect(rectHalf4);
 
     if(data_final_0.flag_on_mat_final){
-        painter->fillRect(rectFin1,    "gray");
-        painter->fillRect(rectFin2,    "gray");
-        painter->fillRect(rectThird1, "gray");
-        painter->fillRect(rectThird2, "gray");
+        painter->fillRect(rectFin1,    "lightgreen");
+        painter->fillRect(rectFin2,    "lightgreen");
+        painter->fillRect(rectThird1, "lightgreen");
+        painter->fillRect(rectThird2, "lightgreen");
     }
-    else{
-        if(flagHoverFinal){
-            painter->fillRect(rectFin1,    "darkgray");
-            painter->fillRect(rectFin2,   "darkgray");
-            painter->fillRect(rectThird1, "darkgray");
-            painter->fillRect(rectThird2, "darkgray");
-        }
-        else{
-            painter->drawRect(rectFin1);
-            painter->drawRect(rectFin2);
-            painter->drawRect(rectThird1);
-            painter->drawRect(rectThird2);
-        }
+    else if(flagHoverFinal){
+        painter->fillRect(rectFin1,    "lightgray");
+        painter->fillRect(rectFin2,   "lightgray");
+        painter->fillRect(rectThird1, "lightgray");
+        painter->fillRect(rectThird2, "lightgray");
     }
+    painter->drawRect(rectFin1);
+    painter->drawRect(rectFin2);
+    painter->drawRect(rectThird1);
+    painter->drawRect(rectThird2);
 
     for(int y = 0; y < 241; y+=80){
         painter->drawRect(40,  y, 100, 40);
@@ -480,13 +477,41 @@ void System_0_Final::mousePressEvent(QGraphicsSceneMouseEvent* e)
     if(rectHalf1.contains(x, y) || rectHalf3.contains(x, y) ||
         rectHalf2.contains(x, y) || rectHalf4.contains(x, y)){
         data_final_0.flag_on_mat_half = true;
-        emit sigSendOnMat(0);
+        QVariant data;
+        QJsonArray jArr;
+        QJsonObject jObj;
+        for(int i = 0; i < 4; i++){
+            if(data_final_0.win_1 == 1){
+                jObj.insert("id", athlete1.id);
+                jObj.insert("name", athlete1.name);
+                jObj.insert("team", athlete1.team);
+                jObj.insert("range", athlete1.range);
+            }
+            else if(data_final_0.win_1 == 1){
+                jObj.insert("id", athlete3.id);
+                jObj.insert("name", athlete3.name);
+                jObj.insert("team", athlete3.team);
+                jObj.insert("range", athlete3.range);
+            }
+            else{
+                jObj.insert("id", -1);
+                jObj.insert("name", "");
+                jObj.insert("team", "");
+                jObj.insert("range", "");
+            }
+        }
+        // jObj.insert("id", lAthletes.at(i).id);
+        // jObj.insert("name", lAthletes.at(i).name);
+        // jObj.insert("team", lAthletes.at(i).team);
+        // jObj.insert("range", lAthletes.at(i).range);
+        emit sigOnMAt(1, data);
     }
 
     if(rectFin1.contains(x, y) || rectFin2.contains(x, y) ||
         rectThird1.contains(x, y) || rectThird2.contains(x, y)){
         data_final_0.flag_on_mat_final = true;
-        emit sigSendOnMat(1);
+        QVariant data;
+        emit sigOnMAt(2, data);
     }
 }
 
