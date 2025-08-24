@@ -26,7 +26,7 @@ void Controller::createCompetition()
 {
     AddCompetition* add = new AddCompetition();
     QString base_name;
-    connect(add, &AddCompetition::sigNewBase, [&](QString name){
+    connect(add, &AddCompetition::sigNewBase, this, [&base_name, this](QString name){
         base_name = name;
         foreach (auto each, lSystem)
             delete each;
@@ -50,9 +50,10 @@ void Controller::createCompetition()
             currentBase = base_name;
             emit sigCompetition(base_name, true);
         }
+        emit sigRemovePanel();
     }
 
-    emit sigRemovePanel();
+
 }
 
 void Controller::openCompetition(QString name)
@@ -66,13 +67,13 @@ void Controller::openCompetition(QString name)
         delete each;
     lSystem.clear();
     QList<std::tuple<int, QString, QString, QString>> lTpl;
-    QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> tpl = base->openBase(currentBase);
+    QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> tpl = base->getCategories(currentBase);
     foreach(auto each, tpl){
         int id = std::get<0>(each);
         int id_system = std::get<1>(each);
         int status = std::get<2>(each);
         QList<athlete> lA =  std::get<3>(each);
-        QVariant data = JsonConverter::jsonToQVariant(id_system, std::get<4>(each));
+        QString data = std::get<4>(each);
         QString category = std::get<5>(each);
         QString age = std::get<6>(each);
         QString weight = std::get<7>(each);
@@ -104,7 +105,7 @@ void Controller::openCompetition(QString name)
 
     emit sigClearMats();
 
-    QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>> lCatOnMat = base->readCategoryOnMats();
+    QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>> lCatOnMat = base->getCategoriesOnMats();
     foreach(auto each, lCatOnMat){
         int mat = std::get<4>(each);
         qDebug()<<"mat = "<<mat;

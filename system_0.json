@@ -1,0 +1,33 @@
+{
+	"CommonData": {
+		"Id": [],
+		"Rates": [],		
+		"AddRates": [],
+		"Places": [],
+		"OnMat": false
+	},
+	"FinalData": {
+		"WinnerHalf1": "0",
+		"WinnerHalf2": "0",
+		"WinnerFinal": "0",
+		"WinnerThird": "0",
+		"Rate1": "",
+		"Rate2": "",
+		"Rate3": "",
+		"Rate4": "",
+		"AddRate1": "",
+		"AddRate2": "",
+		"AddRate3": "",
+		"AddRate4": "",
+		"RateFinal1": "",
+		"RateFinal2": "",
+		"RateThird1": "",
+		"RateThird2": "",
+		"AddRateFinal1": "",
+		"AddRateFinal2": "",
+		"AddRateThird1": "",
+		"AddRateThird2": "",
+		"OnMatHalf": false,
+		"OnMatFinal": false
+	}
+}

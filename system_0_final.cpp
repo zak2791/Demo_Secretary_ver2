@@ -1,14 +1,18 @@
 #include "system_0_final.h"
 #include "qjsonarray.h"
+#include "qjsondocument.h"
 
 #include <QPainter>
 
 System_0_Final::System_0_Final(QList<athlete> aList,
-                               final_0 data
+                               QString data
                                ) {
 
-    setAthletes(aList);
-    data_final_0 = data;
+    lAthlete = aList;
+    setAthletes(data);
+
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+    data_final = doc.object()["FinalData"].toObject();
     // if(aList.count() == 4){
     //     athlete1 = aList.at(0);
     //     athlete3 = aList.at(3);
@@ -18,35 +22,35 @@ System_0_Final::System_0_Final(QList<athlete> aList,
     //qDebug()<<athlete1.id;
     //data_final_0 = data;
 
-    //winnerHalfOne = data_final_0.win_1;
-    if(data_final_0.win_1 == 1){
+    //победитель 1-го полуфинала
+    if(data_final["WinnerHalf1"].toString() == "1"){
         drawFin1 = "1";
         drawThird1 = "3";
-    }else if(data_final_0.win_1 == 2){
+    }else if(data_final["WinnerHalf1"].toString() == "2"){
         drawFin1 = "3";
         drawThird1 = "1";
     }
 
-    //winnerHalfTwo = data_final_0.win_2;
-    if(data_final_0.win_2 == 1){
+    //победитель 2-го полуфинала
+    if(data_final["WinnerHalf2"].toString() == "1"){
         drawFin2 = "2";
         drawThird2 = "4";
-    }else if(data_final_0.win_2 == 2){
+    }else if(data_final["WinnerHalf2"].toString() == "2"){
         drawFin2 = "4";
         drawThird2 = "2";
     }
 
-    //winnerFinal = data_final_0.win_final;
-    if(data_final_0.win_final == 1){
+    //победитель финала
+    if(data_final["WinnerFinal"].toString() == "1"){
         drawFinal = drawFin1;
-    }else if(data_final_0.win_final == 2){
+    }else if(data_final["WinnerFinal"].toString() == "2"){
         drawFinal = drawFin2;
     }
 
-    //winnerThird = data_final_0.wit_third;
-    if(data_final_0.win_third == 1){
+    //победитель за 3 место
+    if(data_final["WinnerThird"].toString() == "1"){
         drawThird = drawThird1;
-    }else if(data_final_0.win_third == 2){
+    }else if(data_final["WinnerThird"].toString() == "2"){
         drawThird = drawThird2;
     }
 
@@ -74,15 +78,11 @@ void System_0_Final::paint(QPainter *painter,
                            const QStyleOptionGraphicsItem*,
                            QWidget*)
 {
-    if(data_final_0.flag_on_mat_half){
+    if(data_final["OnMatHalf"].toBool()){
         painter->fillRect(rectHalf1, "lightgreen");
-        //painter->drawRect(rectHalf1);
         painter->fillRect(rectHalf3, "lightgreen");
-        //painter->drawRect(rectHalf3);
         painter->fillRect(rectHalf2, "lightgreen");
-        //painter->drawRect(rectHalf2);
         painter->fillRect(rectHalf4, "lightgreen");
-        //painter->drawRect(rectHalf4);
     }
     else if(flagHoverHalf){
         painter->fillRect(rectHalf1, "lightgray");
@@ -95,7 +95,7 @@ void System_0_Final::paint(QPainter *painter,
     painter->drawRect(rectHalf2);
     painter->drawRect(rectHalf4);
 
-    if(data_final_0.flag_on_mat_final){
+    if(data_final["OnMatFinal"].toBool()){
         painter->fillRect(rectFin1,    "lightgreen");
         painter->fillRect(rectFin2,    "lightgreen");
         painter->fillRect(rectThird1, "lightgreen");
@@ -152,25 +152,25 @@ void System_0_Final::paint(QPainter *painter,
     painter->drawText(QRect(240, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, athlete2.range);
     painter->drawText(QRect(240, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, athlete4.range);
 
-    painter->drawText(QRect(280,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate1);
-    painter->drawText(QRect(280,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate2);
-    painter->drawText(QRect(280, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate3);
-    painter->drawText(QRect(280, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate4);
+    painter->drawText(QRect(280,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["Rate1"].toString());
+    painter->drawText(QRect(280,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["Rate2"].toString());
+    painter->drawText(QRect(280, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["Rate3"].toString());
+    painter->drawText(QRect(280, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["Rate4"].toString());
 
-    painter->drawText(QRect(320,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate1);
-    painter->drawText(QRect(320,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate2);
-    painter->drawText(QRect(320, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate3);
-    painter->drawText(QRect(320, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate4);
+    painter->drawText(QRect(320,   0,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRate1"].toString());
+    painter->drawText(QRect(320,  80,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRate2"].toString());
+    painter->drawText(QRect(320, 160,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRate3"].toString());
+    painter->drawText(QRect(320, 240,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRate4"].toString());
 
-    painter->drawText(QRect(440,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_fin1);
-    painter->drawText(QRect(440, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_fin2);
-    painter->drawText(QRect(440, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_third1);
-    painter->drawText(QRect(440, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.rate_third2);
+    painter->drawText(QRect(440,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["RateFinal1"].toString());
+    painter->drawText(QRect(440, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["RateFinal2"].toString());
+    painter->drawText(QRect(440, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["RateThird1"].toString());
+    painter->drawText(QRect(440, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["RateThird2"].toString());
 
-    painter->drawText(QRect(480,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_fin1);
-    painter->drawText(QRect(480, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_fin2);
-    painter->drawText(QRect(480, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_third1);
-    painter->drawText(QRect(480, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final_0.add_rate_third2);
+    painter->drawText(QRect(480,  40,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRateFinal1"].toString());
+    painter->drawText(QRect(480, 200,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRateFinal2"].toString());
+    painter->drawText(QRect(480, 320,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRateThird1"].toString());
+    painter->drawText(QRect(480, 400,  40, 40), Qt::AlignVCenter | Qt::AlignHCenter, data_final["AddRateThird2"].toString());
 
     painter->drawText(rectFin1, Qt::AlignVCenter | Qt::AlignHCenter, drawFin1);
 
@@ -189,113 +189,113 @@ void System_0_Final::paint(QPainter *painter,
     painter->drawText(QRect(600 + 3, 360,  80, 40), Qt::AlignVCenter | Qt::AlignLeft, "3 место");
 
     if(flagHoverWin1){
-        if(data_final_0.win_1 == 0)
+        if(data_final["WinnerHalf1"].toString() == "0")
             painter->drawImage(rectWinHalf1, *win_gray_hover);
-        else if(data_final_0.win_1 == 1)
+        else if(data_final["WinnerHalf1"].toString() == "1")
             painter->drawImage(rectWinHalf1, *win_hover);
         else
             painter->drawImage(rectWinHalf1, *win_gray);
     }
     else{
-        if(data_final_0.win_1 == 1)
+        if(data_final["WinnerHalf1"].toString() == "1")
             painter->drawImage(rectWinHalf1, *win);
         else
             painter->drawImage(rectWinHalf1, *win_gray);
     }
     if(flagHoverWin2){
-        if(data_final_0.win_1 == 0)
+        if(data_final["WinnerHalf1"].toString() == "0")
             painter->drawImage(rectWinHalf3, *win_gray_hover);
-        else if(data_final_0.win_1 == 2)
+        else if(data_final["WinnerHalf1"].toString() == "2")
             painter->drawImage(rectWinHalf3, *win_hover);
         else
             painter->drawImage(rectWinHalf3, *win_gray);
     }
     else{
-        if(data_final_0.win_1 == 2)
+        if(data_final["WinnerHalf1"].toString() == "2")
             painter->drawImage(rectWinHalf3, *win);
         else
             painter->drawImage(rectWinHalf3, *win_gray);
     }
     if(flagHoverWin3){
-        if(data_final_0.win_2 == 0)
+        if(data_final["WinnerHalf2"].toString() == "0")
             painter->drawImage(rectWinHalf2, *win_gray_hover);
-        else if(data_final_0.win_2 == 1)
+        else if(data_final["WinnerHalf2"].toString() == "1")
             painter->drawImage(rectWinHalf2, *win_hover);
         else
             painter->drawImage(rectWinHalf2, *win_gray);
     }
     else{
-        if(data_final_0.win_2 == 1)
+        if(data_final["WinnerHalf2"].toString() == "1")
             painter->drawImage(rectWinHalf2, *win);
         else
             painter->drawImage(rectWinHalf2, *win_gray);
     }
     if(flagHoverWin4){
-        if(data_final_0.win_2 == 0)
+        if(data_final["WinnerHalf2"].toString() == "0")
             painter->drawImage(rectWinHalf4, *win_gray_hover);
-        else if(data_final_0.win_2 == 2)
+        else if(data_final["WinnerHalf2"].toString() == "2")
             painter->drawImage(rectWinHalf4, *win_hover);
         else
             painter->drawImage(rectWinHalf4, *win_gray);
     }
     else{
-        if(data_final_0.win_2 == 2)
+        if(data_final["WinnerHalf2"].toString() == "2")
             painter->drawImage(rectWinHalf4, *win);
         else
             painter->drawImage(rectWinHalf4, *win_gray);
     }
     if(flagHoverWinHalf1){
-        if(data_final_0.win_final == 0)
+        if(data_final["WinnerFinal"].toString() == "0")
             painter->drawImage(rectWinFin1, *win_gray_hover);
-        else if(data_final_0.win_final == 1)
+        else if(data_final["WinnerFinal"].toString() == "1")
             painter->drawImage(rectWinFin1, *win_hover);
         else
             painter->drawImage(rectWinFin1, *win_gray);
     }
     else{
-        if(data_final_0.win_final == 1)
+        if(data_final["WinnerFinal"].toString() == "1")
             painter->drawImage(rectWinFin1, *win);
         else
             painter->drawImage(rectWinFin1, *win_gray);
     }
     if(flagHoverWinHalf2){
-        if(data_final_0.win_final == 0)
+        if(data_final["WinnerFinal"].toString() == "0")
             painter->drawImage(rectWinFin2, *win_gray_hover);
-        else if(data_final_0.win_final == 2)
+        else if(data_final["WinnerFinal"].toString() == "2")
             painter->drawImage(rectWinFin2, *win_hover);
         else
             painter->drawImage(rectWinFin2, *win_gray);
     }
     else{
-        if(data_final_0.win_final == 2)
+        if(data_final["WinnerFinal"].toString() == "2")
             painter->drawImage(rectWinFin2, *win);
         else
             painter->drawImage(rectWinFin2, *win_gray);
     }
     if(flagHoverWinThird1){
-        if(data_final_0.win_third == 0)
+        if(data_final["WinnerThird"].toString() == "0")
             painter->drawImage(rectWinThird1, *win_gray_hover);
-        else if(data_final_0.win_third == 1)
+        else if(data_final["WinnerThird"].toString() == "1")
             painter->drawImage(rectWinThird1, *win_hover);
         else
             painter->drawImage(rectWinThird1, *win_gray);
     }
     else{
-        if(data_final_0.win_third == 1)
+        if(data_final["WinnerThird"].toString() == "1")
             painter->drawImage(rectWinThird1, *win);
         else
             painter->drawImage(rectWinThird1, *win_gray);
     }
     if(flagHoverWinThird2){
-        if(data_final_0.win_third == 0)
+        if(data_final["WinnerThird"].toString() == "0")
             painter->drawImage(rectWinThird2, *win_gray_hover);
-        else if(data_final_0.win_third == 2)
+        else if(data_final["WinnerThird"].toString() == "2")
             painter->drawImage(rectWinThird2, *win_hover);
         else
             painter->drawImage(rectWinThird2, *win_gray);
     }
     else{
-        if(data_final_0.win_third == 2)
+        if(data_final["WinnerThird"].toString() == "2")
             painter->drawImage(rectWinThird2, *win);
         else
             painter->drawImage(rectWinThird2, *win_gray);
@@ -303,36 +303,63 @@ void System_0_Final::paint(QPainter *painter,
 
 }
 
-void System_0_Final::setAthletes(QList<athlete> aList)
+void System_0_Final::setAthletes(QString str)
 {
-    athlete1 = aList.at(0);
-    athlete3 = aList.at(3);
-    athlete2 = aList.at(1);
-    athlete4 = aList.at(2);
+    QJsonDocument doc = QJsonDocument::fromJson(str.toUtf8());
+    QJsonObject jObj = doc.object()["CommonData"].toObject();
+    QJsonArray arrId = jObj["Id"].toArray();
+    QJsonArray arrPlaces = jObj["Places"].toArray();
+    athlete1 = athlete();
+    athlete3 = athlete();
+    athlete2 = athlete();
+    athlete4 = athlete();
+    for(int i = 0; i < arrPlaces.count(); i++){
+        if(arrPlaces.at(i).toString() == "1"){
+            int id = arrId.at(i).toInt();
+            foreach(auto each, lAthlete)
+                if(each.id == id)
+                    athlete1 = each;
+        }else if(arrPlaces.at(i).toString() == "2"){
+            int id = arrId.at(i).toInt();
+            foreach(auto each, lAthlete)
+                if(each.id == id)
+                    athlete3 = each;
+        }else if(arrPlaces.at(i).toString() == "3"){
+            int id = arrId.at(i).toInt();
+            foreach(auto each, lAthlete)
+                if(each.id == id)
+                    athlete2 = each;
+        }else if(arrPlaces.at(i).toString() == "4"){
+            int id = arrId.at(i).toInt();
+            foreach(auto each, lAthlete)
+                if(each.id == id)
+                    athlete4 = each;
+        }
+    }
     update();
 }
 
 void System_0_Final::setRates(int mode, QList<rates> rates)
 {
     if(mode == 1){
-        data_final_0.rate1 = rates.at(0).rate;
-        data_final_0.rate2 = rates.at(1).rate;
-        data_final_0.rate3 = rates.at(2).rate;
-        data_final_0.rate4 = rates.at(3).rate;
-        data_final_0.add_rate1 = rates.at(0).add_rate;
-        data_final_0.add_rate2 = rates.at(1).add_rate;
-        data_final_0.add_rate3 = rates.at(2).add_rate;
-        data_final_0.add_rate4 = rates.at(3).add_rate;
+        data_final["Rate1"] = rates.at(0).rate;
+        data_final["Rate2"] = rates.at(1).rate;
+        data_final["Rate3"] = rates.at(2).rate;
+        data_final["Rate4"] = rates.at(3).rate;
+        data_final["AddRate1"] = rates.at(0).add_rate;
+        data_final["AddRate2"] = rates.at(1).add_rate;
+        data_final["AddRate3"] = rates.at(2).add_rate;
+        data_final["AddRate4"] = rates.at(3).add_rate;
     }
     else{
-        data_final_0.rate_fin1 = rates.at(0).rate;
-        data_final_0.rate_fin2 = rates.at(1).rate;
-        data_final_0.rate_third1 = rates.at(2).rate;
-        data_final_0.rate_third2 = rates.at(3).rate;
-        data_final_0.add_rate_fin1 = rates.at(0).add_rate;
-        data_final_0.add_rate_fin2 = rates.at(1).add_rate;
-        data_final_0.add_rate_third1 = rates.at(2).add_rate;
-        data_final_0.add_rate_third2 = rates.at(3).add_rate;
+        data_final["RateFinal1"] = rates.at(0).rate;
+        data_final["RateFinal2"] = rates.at(1).rate;
+        data_final["RateThird1"] = rates.at(2).rate;
+        data_final["RateThird2"] = rates.at(3).rate;
+        data_final["AddRateFinal1"] = rates.at(0).add_rate;
+        data_final["AddRateFinal2"] = rates.at(1).add_rate;
+        data_final["AddRateThird1"] = rates.at(2).add_rate;
+        data_final["AddRateThird2"] = rates.at(3).add_rate;
     }
     update();
 }
@@ -340,9 +367,9 @@ void System_0_Final::setRates(int mode, QList<rates> rates)
 void System_0_Final::cancelSendOnMat(int onmat)
 {
     if(onmat == 0)
-        data_final_0.flag_on_mat_half  = false;
+        data_final["OnMatHalf"]  = false;
     else
-        data_final_0.flag_on_mat_final = false;
+        data_final["OnMatFinal"] = false;
 }
 
 void System_0_Final::mousePressEvent(QGraphicsSceneMouseEvent* e)
@@ -352,123 +379,123 @@ void System_0_Final::mousePressEvent(QGraphicsSceneMouseEvent* e)
 
     /*Выбор победителей*/
     if(rectWinHalf1.contains(x, y)){
-        if(data_final_0.win_1 == 0){
-            data_final_0.win_1 = 1;
+        if(data_final["WinnerHalf1"].toString() == "0"){
+            data_final["WinnerHalf1"] = "1";
             drawFin1 = "1";
             drawThird1 = "3";
             emit sigPressWinner(0, true);
         }
-        else if (data_final_0.win_1 == 1){
-            data_final_0.win_1 = 0;
+        else if (data_final["WinnerHalf1"].toString() == "1"){
+            data_final["WinnerHalf1"] = "0";
             drawFin1 = "";
             drawThird1 = "";
             emit sigPressWinner(0, false);
         }
     }
     else if(rectWinHalf3.contains(x, y)){
-        if(data_final_0.win_1 == 0){
-            data_final_0.win_1 = 2;
+        if(data_final["WinnerHalf1"].toString() == "0"){
+            data_final["WinnerHalf1"] = "2";
             drawFin1 = "3";
             drawThird1 = "1";
             emit sigPressWinner(1, true);
         }
-        else if (data_final_0.win_1 == 2){
-            data_final_0.win_1 = 0;
+        else if (data_final["WinnerHalf1"].toString() == "2"){
+            data_final["WinnerHalf1"] = "0";
             drawFin1 = "";
             drawThird1 = "";
             emit sigPressWinner(1, false);
         }
     }
     else if(rectWinHalf2.contains(x, y)){
-        if(data_final_0.win_2 == 0){
-            data_final_0.win_2 = 1;
+        if(data_final["WinnerHalf2"].toString() == "0"){
+            data_final["WinnerHalf2"] = "1";
             drawFin2 = "2";
             drawThird2 = "4";
             emit sigPressWinner(2, true);
         }
-        else if (data_final_0.win_2 == 1){
-            data_final_0.win_2 = 0;
+        else if (data_final["WinnerHalf2"].toString() == "1"){
+            data_final["WinnerHalf2"] = "0";
             drawFin2 = "";
             drawThird2 = "";
             emit sigPressWinner(2, false);
         }
     }
     else if(rectWinHalf4.contains(x, y)){
-        if(data_final_0.win_2 == 0){
-            data_final_0.win_2 = 2;
+        if(data_final["WinnerHalf2"].toString() == "0"){
+            data_final["WinnerHalf2"] = "2";
             drawFin2 = "4";
             drawThird2 = "2";
             emit sigPressWinner(3, true);
         }
-        else if (data_final_0.win_2 == 2){
-            data_final_0.win_2 = 0;
+        else if (data_final["WinnerHalf2"].toString() == "2"){
+            data_final["WinnerHalf2"] = 0;
             drawFin2 = "";
             drawThird2 = "";
             emit sigPressWinner(3, false);
         }
     }
     else if(rectWinFin1.contains(x, y)){
-        if(data_final_0.win_final == 0){
-            data_final_0.win_final = 1;
+        if(data_final["WinnerFinal"].toString() == "0"){
+            data_final["WinnerFinal"] = "1";
             //drawFinal = drawFin1;
             emit sigPressWinner(4, true);
         }
-        else if (data_final_0.win_final == 1){
-            data_final_0.win_final = 0;
+        else if (data_final["WinnerFinal"].toString() == "1"){
+            data_final["WinnerFinal"] = "0";
             //drawFinal = "";
             emit sigPressWinner(4, false);
         }
     }
     else if(rectWinFin2.contains(x, y)){
-        if(data_final_0.win_final == 0){
-            data_final_0.win_final = 2;
+        if(data_final["WinnerFinal"].toString() == "0"){
+            data_final["WinnerFinal"] = "2";
             //drawFinal = drawFin2;
             emit sigPressWinner(5, true);
         }
-        else if (data_final_0.win_final == 2){
-            data_final_0.win_final = 0;
+        else if (data_final["WinnerFinal"].toString() == "2"){
+            data_final["WinnerFinal"] = "0";
             //drawFinal = "";
             emit sigPressWinner(5, false);
         }
     }
     else if(rectWinThird1.contains(x, y)){
-        if(data_final_0.win_third == 0){
-            data_final_0.win_third = 1;
+        if(data_final["WinnerThird"].toString() == "0"){
+            data_final["WinnerThird"] = "1";
             //drawThird = drawThird1;
             emit sigPressWinner(6, true);
         }
-        else if (data_final_0.win_third == 1){
-            data_final_0.win_third = 0;
+        else if (data_final["WinnerThird"].toString() == "1"){
+            data_final["WinnerThird"] = "0";
             //drawThird = "";
             emit sigPressWinner(6, false);
         }
     }
     else if(rectWinThird2.contains(x, y)){
-        if(data_final_0.win_third == 0){
-            data_final_0.win_third = 2;
+        if(data_final["WinnerThird"].toString() == "0"){
+            data_final["WinnerThird"] = "2";
             //drawThird = drawThird2;
             emit sigPressWinner(7, true);
         }
-        else if (data_final_0.win_third == 2){
-            data_final_0.win_third = 0;
+        else if (data_final["WinnerThird"].toString() == "2"){
+            data_final["WinnerThird"] = "0";
             //drawThird = "";
             emit sigPressWinner(7, false);
         }
     }
 
-    if(data_final_0.win_final == 1){
+    if(data_final["WinnerFinal"].toString() == "1"){
         drawFinal = drawFin1;
     }
-    else if(data_final_0.win_final == 2){
+    else if(data_final["WinnerFinal"].toString() == "2"){
         drawFinal = drawFin2;
     }
     else{
         drawFinal = "";
     }
 
-    if(data_final_0.win_third == 1)
+    if(data_final["WinnerThird"].toString() == "1")
         drawThird = drawThird1;
-    else if(data_final_0.win_third == 2)
+    else if(data_final["WinnerThird"].toString() == "2")
         drawThird = drawThird2;
     else
         drawThird = "";
@@ -476,18 +503,18 @@ void System_0_Final::mousePressEvent(QGraphicsSceneMouseEvent* e)
     /*Отправка на ковер*/
     if(rectHalf1.contains(x, y) || rectHalf3.contains(x, y) ||
         rectHalf2.contains(x, y) || rectHalf4.contains(x, y)){
-        data_final_0.flag_on_mat_half = true;
+        data_final["OnMatHalf"] = true;
         QVariant data;
         QJsonArray jArr;
         QJsonObject jObj;
         for(int i = 0; i < 4; i++){
-            if(data_final_0.win_1 == 1){
+            if(data_final["WinnerHalf1"].toString() == "1"){
                 jObj.insert("id", athlete1.id);
                 jObj.insert("name", athlete1.name);
                 jObj.insert("team", athlete1.team);
                 jObj.insert("range", athlete1.range);
             }
-            else if(data_final_0.win_1 == 1){
+            else if(data_final["WinnerHalf1"].toString() == "1"){
                 jObj.insert("id", athlete3.id);
                 jObj.insert("name", athlete3.name);
                 jObj.insert("team", athlete3.team);
@@ -509,7 +536,7 @@ void System_0_Final::mousePressEvent(QGraphicsSceneMouseEvent* e)
 
     if(rectFin1.contains(x, y) || rectFin2.contains(x, y) ||
         rectThird1.contains(x, y) || rectThird2.contains(x, y)){
-        data_final_0.flag_on_mat_final = true;
+        data_final["OnMatFinal"] = true;
         QVariant data;
         emit sigOnMAt(2, data);
     }

@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->aCreate,    &QAction::triggered,         controller, &::Controller::createCompetition);
     connect(actAdd,       &QAction::triggered,         controller, &::Controller::addAthletes);
 
-    connect(controller,     &Controller:: sigCompetition, [actAdd, this](QString s, bool b) {
+    connect(controller,     &Controller:: sigCompetition, this, [actAdd, this](QString s, bool b) {
         if(s == "")
             actAdd->setEnabled(false);
         else{
@@ -46,11 +46,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(controller, &Controller::sigIsertCategoryOnMat, this, &MainWindow::insertCategoryOnMat);
     connect(controller, &Controller::sigIsertCategoryOnMatFromBase, this, &MainWindow::insertCategoryOnMatFromBase);
-    connect(controller, &Controller::sigClearMats, [this](){listWidgetMat1->clear();
+    connect(controller, &Controller::sigClearMats, this, [this](){listWidgetMat1->clear();
                                                             listWidgetMat2->clear();
                                                             listWidgetMat3->clear();});
 
-    connect(controller, &Controller::sigRemovePanel, [this](){
+    connect(controller, &Controller::sigRemovePanel, this, [this](){
         panel = findChild<CategoryControlPanel*>();
         if(panel != nullptr){
             ui->verticalLayout->removeWidget(panel);
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
         delete panel;
     });
 
-    connect(controller, &Controller::sigRemoveCategoryFromMat, [this](int id, int mat){
+    connect(controller, &Controller::sigRemoveCategoryFromMat, this, [this](int id, int mat){
         QListWidget* lWidget;
         if(mat == 0){
             lWidget = listWidgetMat1;
@@ -166,7 +166,7 @@ void MainWindow::fillMenuLastCompetitions(){
         foreach(QFileInfo inf, lFiles){
             QAction* act = gr->addAction(inf.completeBaseName());
             act->setCheckable(true);
-            connect(act, &QAction::triggered, [act, this](){
+            connect(act, &QAction::triggered, this, [act, this](){
                 controller->openCompetition(act->text());
             });
         }

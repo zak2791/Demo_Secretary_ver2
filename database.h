@@ -10,28 +10,28 @@ class DataBase : public QObject
 public:
     DataBase();
     ~DataBase();
-    bool createBase(QString);
-    bool createBaseOnMat(QString);
-    QList<std::tuple<int,               //id
-                    int,                //id_system
-                    int,                //status
-                    QList<athlete>,     //athletes
-                    QString,            //data
-                    QString,            //category
-                    QString,            //age
-                    QString             //weight
-                            >> openBase(QString);   //открытие соревнования (чтение всех категорий)
+    bool createBase(QString);           //создаёт базу данных
+    bool createBaseOnMat(QString);      //создаёт базу данных для переноса на компьютер на ковре
+    QList<std::tuple<int,               //id - идентификатор весовой категории
+                    int,                //id_system - идентификатор системы проведения соревнований
+                    int,                //status -
+                    QList<athlete>,     //athletes - список спортсменов
+                    QString,            //data - оценки, места и т. д.
+                    QString,            //category - мужчины, женщины, ...
+                    QString,            //age - возраст
+                    QString             //weight - вес
+                            >> getCategories(QString);   //открытие соревнования (чтение всех категорий)
 
-    QList<std::tuple<int,               //id
+    QList<std::tuple<int,                //id
                      int,                //id_category
                      int,                //id_system
-                     int,                //mode
-                     int,                //mat
+                     int,                //mode - режим: первый круг, полуфинал, финал, ...
+                     int,                //mat - номер ковра
                      QString,            //category
                      QString,            //age
                      QString,            //weight
                      QString             //data
-                     >> readCategoryOnMats(void);
+                     >> getCategoriesOnMats(void);
 
     bool addCategories(QList<QStringList>);
     int createCategoryOnMat(int, int, int, int/*mat*/, QVariant);
@@ -39,9 +39,7 @@ public:
 
 public slots:
     void writeData(int,                         //id категории
-                   int,                         //id system
-                   int,                         //mode (0-сохранение места общего круга)
-                   QVariant                     //данные
+                   QString                      //данные
                    );
 
 

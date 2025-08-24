@@ -18,7 +18,7 @@ public:
              int,
              int,
              QList<athlete>,
-             QVariant,
+             QString,
              QString, QString, QString);
 
 public slots:
@@ -35,10 +35,7 @@ public slots:
                           );
 
 private slots:
-    void savePlace(//int,     //id спортсмена
-                   //QString  //место
-                    int id
-                   , QString place);
+    void savePlace(QString);
     virtual void sendOnMat(int, QVariant);
 
 private:

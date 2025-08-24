@@ -14,7 +14,7 @@ class System_0_Final : public QGraphicsObject
     Q_OBJECT
 public:
     System_0_Final(QList<athlete>,                  //список финалистов согласно занятым местам (1, 2, 3, 4)
-                   final_0 = final_0()              //данные финальной части
+                   QString                          //данные финальной части
                    );
 
     void setRates(int,                               //режим: 1 - полуфиналы, 2 - финалы
@@ -23,13 +23,15 @@ public:
     void cancelSendOnMat(int);                      //отмена отправки на ковер, 0 - отмена полуфиналов, 1 - отмена финалов
 
 public slots:
-    void setAthletes(QList<athlete>);               //установить финалистов
+    void setAthletes(QString);               //установить финалистов
 
 private:
     QRectF boundingRect(void) const override;
     void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 
-    final_0 data_final_0;
+    QJsonObject data_final;
+
+    QList<athlete> lAthlete;
     athlete athlete1;
     athlete athlete3;
     athlete athlete2;

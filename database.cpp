@@ -24,8 +24,6 @@ bool DataBase::createBase(QString name){
                   "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name  TEXT, team TEXT, range TEXT,  "
                   "id_category INTEGER, "
-                  "place TEXT DEFAULT '', "
-                  "rate TEXT DEFAULT '', "
                   "UNIQUE (name, team, id_category))";
     if(!query->exec(str)){
         msgBox.setText("Ошибка создания таблицы sportsmen " + db.lastError().text());
@@ -63,7 +61,7 @@ bool DataBase::createBaseOnMat(QString base){
 
 }
 
-QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString> > DataBase::openBase(QString base){
+QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString> > DataBase::getCategories(QString base){
     if(!db.isOpen())
         db.close();
     db.setDatabaseName(base);
@@ -104,8 +102,6 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
             ath.name = q.value("name").toString();
             ath.team = q.value("team").toString();
             ath.range = q.value("range").toString();
-            ath.rate = q.value("rate").toString();
-            ath.place = q.value("place").toString();
             lA.append(ath);
         }
         lTuple.append(std::tuple(id, id_system, status, lA, data, category, age, weight));
@@ -113,10 +109,16 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
     return lTuple;
 }
 
+/////////////////////////////////////////////////////////////////////////////
+/// \brief DataBase::addCategories
+/// Создание категорий при добавлении спортсменов
+/// \param list
+/// \return
+//////////////////////////////////
 bool DataBase::addCategories(QList<QStringList> list)
 {
     QMessageBox msgBox;
-    QString sqlCategories("INSERT INTO categories (id_system, category, age, weight) VALUES (?, ?, ?, ?);") ;
+    QString sqlCategories("INSERT INTO categories (id_system, category, age, weight, data) VALUES (?, ?, ?, ?, ?);") ;
     QString sqlSportsmen("INSERT INTO sportsmen (id_category, name, team, range) VALUES (?, ?, ?, ?);") ;
     QSqlQuery q;
     q.exec(" PRAGMA synchronous = OFF, journal_mode = MEMORY");
@@ -133,6 +135,14 @@ bool DataBase::addCategories(QList<QStringList> list)
         query->bindValue(1, category);
         query->bindValue(2, age);
         query->bindValue(3, weight);
+        QFile file;
+        if(id_system == 0)
+            file.setFileName("system_0.json");
+        file.open(QIODevice::ReadOnly);
+        QString data = file.readAll();
+        file.close();
+        query->bindValue(4, data);
+        qDebug()<<data;
         if(!query->exec()){
             msgBox.setText("Ошибка добавления категории " + db.lastError().text());
             msgBox.exec();
@@ -161,16 +171,16 @@ bool DataBase::addCategories(QList<QStringList> list)
     return true;
 }
 
-void DataBase::writeData(int id, int id_system, int mode, QVariant data)
+void DataBase::writeData(int id, QString data)
 {
-    if(id_system == 0){
-        if(mode == 0){      //установка места в общем круге
-            std::tuple<int, QString> tData = data.value<std::tuple<int, QString>>();
-            int id_athlet = std::get<0>(tData);
-            QString place = std::get<1>(tData);
-            writeCommonPlace(id_athlet, place);
-        }
-    }
+    // if(id_system == 0){
+    //     if(mode == 0){      //установка места в общем круге
+    //         //std::tuple<int, QString> tData = data.value<std::tuple<int, QString>>();
+    //         // int id_athlet = std::get<0>(tData);
+    //         // QString place = std::get<1>(tData);
+    //         // writeCommonPlace(id_athlet, place);
+    //     }
+    // }
 }
 
 int DataBase::createCategoryOnMat(int id_cat, int id_sys, int mode, int mat, QVariant data)
@@ -283,7 +293,7 @@ void DataBase::writeCommonPlace(int id_athlet, QString place)
     }
 }
 
-QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString> > DataBase::readCategoryOnMats()
+QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString> > DataBase::getCategoriesOnMats()
 {
     QMessageBox msgBox;
     QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>> lTpl;
