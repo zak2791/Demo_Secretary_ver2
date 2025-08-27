@@ -32,7 +32,7 @@ private:
     QObject* p;
 
 private slots:
-    void sendOnMat(int, int, int, QString, QString, QString, QVariant);
+    void sendOnMat(int, int, int, QString, QString, QString, QString);
     void removeCategoryFromMat(int);
 
 signals:

@@ -150,10 +150,12 @@ void Controller::addAthletes()
 
 }
 
-void Controller::sendOnMat(int id, int id_system, int mode , QString category, QString age, QString weight, QVariant data)
+void Controller::sendOnMat(int id, int id_system, int mode , QString category, QString age, QString weight, QString data)
 {
+    qDebug()<<"sendOnMat!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     int mat = static_cast<MainWindow*>(p)->getMat();
     int id_onMat = base->createCategoryOnMat(id, id_system, mode, mat, data);
+    qDebug()<<"id_onMat = "<<id_onMat<<mode;
     CategoryOnMat* cat = new CategoryOnMat(id_onMat, id, id_system, mode, category, age, weight, data);
     connect(cat, &CategoryOnMat::sigRemoveFromMat, this, &Controller::removeCategoryFromMat);
     connect(cat, &CategoryOnMat::sigClick, static_cast<MainWindow*>(p), &MainWindow::clickCategoryOnMat);

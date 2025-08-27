@@ -12,7 +12,7 @@ CategoryOnMat::CategoryOnMat(int id_,
                              QString category,
                              QString age,
                              QString weight,
-                             QVariant data,
+                             QString _data,
                              QWidget *parent) : QFrame(parent) {
 
     id = id_;
@@ -22,11 +22,17 @@ CategoryOnMat::CategoryOnMat(int id_,
     sCategory = category;
     sAge = age;
     sWeight = weight;
-    vData = data;
+    data = _data;
     lblInfo = new QLabel(this);
     if(id_system == 0){
         if(mode == 0){
             lblInfo->setText("Общий круг");
+        }
+        else if(mode == 1){
+            lblInfo->setText("Полуфинал");
+        }
+        else if(mode == 1){
+            lblInfo->setText("Финал");
         }
     }
 

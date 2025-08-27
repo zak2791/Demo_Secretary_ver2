@@ -35,30 +35,23 @@ public slots:
                           );
 
 private slots:
-    void savePlace(QString);
-    virtual void sendOnMat(int, QVariant);
+    void saveData(void);
+    virtual void sendOnMat(int, QString);
 
 private:
     System_0_Common* commonRoundItem;
     System_0_Final* finalItem;
-
+    QJsonObject objCommon;
+    QJsonObject objFinal;
+    QJsonObject obj;
 
 signals:
     ///////////////////////////////////////
     /// \brief sigOnMat                 ///
     /// сигнал отправки данных на ковер ///
     ///////////////////////////////////////
-    void sigOnMAt(int, QVariant);
-    // void sigOnMat(int,          //id категории
-    //               int,          //id системы проведения
-    //               int,          //режим
-    //               QString,
-    //               QString,
-    //               QString,
-    //               QVariant      //данные
-    //               );
-    //virtual void sendOnMat(int, int, QList<QString>);
-    //QList<athlete> lAthlete;
+    void sigOnMAt(int, QString);
+
 };
 
 #endif // SYSTEM_0_H

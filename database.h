@@ -34,7 +34,7 @@ public:
                      >> getCategoriesOnMats(void);
 
     bool addCategories(QList<QStringList>);
-    int createCategoryOnMat(int, int, int, int/*mat*/, QVariant);
+    int createCategoryOnMat(int, int, int, int/*mat*/, QString);
     QList<int> deleteCategoryFromMat(int);
 
 public slots:
@@ -48,7 +48,7 @@ private:
     QSqlDatabase db;
     QSqlQuery* query;
 
-    void writeCommonPlace(int, QString);        //запись места в общем круге 
+    //void writeCommonPlace(int, QString);        //запись места в общем круге
 
 };
 

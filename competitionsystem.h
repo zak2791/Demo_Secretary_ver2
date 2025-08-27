@@ -20,7 +20,7 @@ public:
     int getId(void){return id;}
 
 private slots:
-    virtual void sendOnMat(int, QVariant) = 0;
+    virtual void sendOnMat(int, QString) = 0;
 
 public slots:
 
@@ -47,7 +47,7 @@ protected:
     int status;
     //int sendingFlag;          //флаг ожидания отправки данных на ковер
     QList<athlete> lAthlete;    //
-    //QVariant data;              //
+    QString data;              //
     QString category;
     QString age;
     QString weight;
@@ -60,7 +60,7 @@ signals:
                       QString,           //категория
                       QString,           //возраст
                       QString,           //вес
-                      QVariant
+                      QString            //data
                       );
 
     ///////////////////////////////////////////////////////////

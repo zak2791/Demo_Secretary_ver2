@@ -5,15 +5,12 @@
 #include <QPainter>
 #include <QComboBox>
 
-System_0_Common::System_0_Common(QList<athlete> list, QString _data){
+System_0_Common::System_0_Common(QList<athlete> list, QJsonObject* _data){
+
     lAthletes = list;
-    //flagOnMat = onMat;
 
-    QJsonDocument doc = QJsonDocument::fromJson(_data.toUtf8());
-    jObj = doc.object();
-    data = jObj["CommonData"].toObject();
+    data = _data;
 
-    QJsonArray jArr;
     for(int i = 0; i < list.count(); i++){
         lRectDraw.append(QRect(  0, i * 40, 40, 40));
         lRectName.append(QRect( 40, i * 40, 100, 40));
@@ -29,21 +26,20 @@ System_0_Common::System_0_Common(QList<athlete> list, QString _data){
         s = lAthletes.at(i).team.simplified();
         lAthletes[i].team = s.replace(s.indexOf(" "), 1, "\n");
         hoverPlaceFlags.append(false);
-        // if(lAthletes[i].place != "")
-        //     currentListPlaces.append(lAthletes[i].place);
-        if(data["Id"].toArray().at(i).toString() != "")
-            currentListPlaces.append(data["Places"].toArray().at(i).toString());
-        // QJsonObject jObj;
-        // jObj.insert("id", lAthletes.at(i).id);
-        // jObj.insert("name", lAthletes.at(i).name);
-        // jObj.insert("team", lAthletes.at(i).team);
-        // jObj.insert("range", lAthletes.at(i).range);
-        // jArr.append(jObj);
     }
 
-    //data = jArr.toVariantList();
+    idPlace1 = (*data)["Place1"].toInt();
+    if(idPlace1 > 0) currentListPlaces.append("1");
+    idPlace2 = (*data)["Place2"].toInt();
+    if(idPlace2 > 0) currentListPlaces.append("2");
+    idPlace3 = (*data)["Place3"].toInt();
+    if(idPlace3 > 0) currentListPlaces.append("3");
+    idPlace4 = (*data)["Place4"].toInt();
+    if(idPlace4 > 0) currentListPlaces.append("4");
 
     rectDraw = QRect(0, 0, 40, 40 * list.count());
+
+    flagOnMat = (*data)["OnMat"].toBool();
 
     menu = new QMenu;
     setAcceptHoverEvents(true);
@@ -66,6 +62,14 @@ void System_0_Common::setRates(QList<rates> list)
     // }
 }
 
+void System_0_Common::cancelSendOnMat()
+{
+    (*data)["OnMat"] = false;
+    flagOnMat = false;
+    emit sigSaveData();
+    update();
+}
+
 QRectF System_0_Common::boundingRect() const
 {
     qreal penWidth = 1;
@@ -74,8 +78,8 @@ QRectF System_0_Common::boundingRect() const
 }
 
 void System_0_Common::paint(QPainter *painter,
-                       const QStyleOptionGraphicsItem*,
-                       QWidget*)
+                            const QStyleOptionGraphicsItem*,
+                            QWidget*)
 {
 
     QFont f = painter->font();
@@ -113,14 +117,33 @@ void System_0_Common::paint(QPainter *painter,
         painter->drawRect(lRectRange.at(i));
         painter->drawText(lRectRange.at(i), Qt::AlignVCenter | Qt::AlignHCenter, lAthletes.at(i).range);
         painter->drawRect(lRectRate.at(i));
-        painter->drawText(lRectRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, data["Rates"].toArray().at(i).toString());
         painter->drawRect(lRectAddRate.at(i));
-        painter->drawText(lRectAddRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, data["AddRates"].toArray().at(i).toString());
+
         if(hoverPlaceFlags.at(i))
             painter->fillRect(lRectPlace.at(i), "lightgray");
         else
             painter->drawRect(lRectPlace.at(i));
-        painter->drawText(lRectPlace.at(i), Qt::AlignVCenter | Qt::AlignHCenter, data["Places"].toArray().at(i).toString());
+
+        for(int j = 0; j < lAthletes.count(); j++){
+            if((*data)["Id"].toArray().at(j) == lAthletes.at(i).id){
+                painter->drawText(lRectRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, QString::number((*data)["Rates"].toArray().at(j).toDouble()));
+                painter->drawText(lRectAddRate.at(i), Qt::AlignVCenter | Qt::AlignHCenter, QString::number((*data)["AddRates"].toArray().at(j).toDouble()));
+
+                if((*data)["Place1"] == (*data)["Id"][j]){
+                    painter->drawText(lRectPlace.at(i), Qt::AlignVCenter | Qt::AlignHCenter, "1");
+                }
+                else if((*data)["Place2"] == (*data)["Id"][j]){
+                    painter->drawText(lRectPlace.at(i), Qt::AlignVCenter | Qt::AlignHCenter, "2");
+                }
+                else if((*data)["Place3"] == (*data)["Id"][j]){
+                    painter->drawText(lRectPlace.at(i), Qt::AlignVCenter | Qt::AlignHCenter, "3");
+                }
+                else if((*data)["Place4"] == (*data)["Id"][j]){
+                    painter->drawText(lRectPlace.at(i), Qt::AlignVCenter | Qt::AlignHCenter, "4");
+                }
+            }
+        }
+
     }
 }
 
@@ -141,64 +164,130 @@ void System_0_Common::mousePressEvent(QGraphicsSceneMouseEvent* e){
 
         if(act != nullptr){
             int index = hoverPlaceFlags.indexOf(true);
-            QString place = data["Places"].toArray().at(index).toString();
-            if(place != ""){
-                int ind = currentListPlaces.indexOf(place);
-                currentListPlaces.remove(ind);
+            int id = lAthletes[index].id;
+            if(act->text() == ""){
+                if(idPlace1 == id){
+                    int ind = currentListPlaces.indexOf("1");
+                    idPlace1 = -1;
+                    (*data)["Place1"] = -1;
+                    currentListPlaces.remove(ind);
+                }
+                else if(idPlace2 == id){
+                    int ind = currentListPlaces.indexOf("2");
+                    idPlace2 = -1;
+                    (*data)["Place2"] = -1;
+                    currentListPlaces.remove(ind);
+                }
+                else if(idPlace3 == id){
+                    int ind = currentListPlaces.indexOf("3");
+                    idPlace3 = -1;
+                    (*data)["Place3"] = -1;
+                    currentListPlaces.remove(ind);
+                }
+                else if(idPlace4 == id){
+                    int ind = currentListPlaces.indexOf("4");
+                    idPlace4 = -1;
+                    (*data)["Place4"] = -1;
+                    currentListPlaces.remove(ind);
+                }
             }
-            data["Places"].toArray().at(index) = act->text();
-            qDebug()<<data["Places"].toArray().at(index);
-            currentListPlaces.append(act->text());
-            /////////////////////////////////////////////////////////////////////////////
-            // QList<athlete> lA{athlete(), athlete(), athlete(), athlete()};
-            // QStringList arr = data["Places"].toArray();
-            // foreach(auto each, lAthletes){
-            //     if(each.place == "1")
-            //         lA[0] = each;
-            //     else if(each.place == "2")
-            //         lA[1] = each;
-            //     else if(each.place == "3")
-            //         lA[2] = each;
-            //     else if(each.place == "4")
-            //         lA[3] = each;
-            // }
-            ///////////////////////////////////////////////////////////////////////////////
+            else if(act->text() == "1"){
+                idPlace1 = id;
+                (*data)["Place1"] = id;
+                currentListPlaces.append("1");
+                qDebug()<<"(*data)['Place1'] = "<<(*data)["Place1"]<<data;
+            }
+            else if(act->text() == "2"){
+                idPlace2 = id;
+                (*data)["Place2"] = id;
+                currentListPlaces.append("2");
+            }
+            else if(act->text() == "3"){
+                idPlace3 = id;
+                (*data)["Place3"] = id;
+                currentListPlaces.append("3");
+            }
+            else if(act->text() == "4"){
+                idPlace4 = id;
+                (*data)["Place4"] = id;
+                currentListPlaces.append("4");
+            }
 
-            QJsonDocument doc(jObj);
-            QString strJson(doc.toJson(QJsonDocument::Compact));
-            emit sigPlace(strJson);                                  //установка спортсменов в финальной части
+            emit sigSaveData();
 
             update();
         }
         return;
     }
-    //////////////////////////////////////////
-    // if(rSortRate.contains(x, y)){
-    //     std::sort(lAthletes.begin(), lAthletes.end(), [](const athlete &a1,
-    //                                                  const athlete &a2){
-    //         return a1.rate > a2.rate;
-    //     });
-    //     return;
-    // }
-    // if(rSortPlace.contains(x, y)){
-    //     std::sort(lAthletes.begin(), lAthletes.end(), [](const athlete &a1,
-    //                                                      const athlete &a2){
-    //         if(a1.place == "" && a2.place == "")
-    //             return true;
-    //         if(a1.place == "")
-    //             return false;
-    //         if(a2.place == "")
-    //             return true;
-    //         return a1.place < a2.place;
-    //     });
-    //     return;
-    // }
+
+    if(rSortPlace.contains(x, y)){
+        std::sort(lAthletes.begin(), lAthletes.end(), [this](const athlete &a1, const athlete &a2){
+            QMap<QString, int> map;
+            if(a1.id == (*data)["Place1"])
+                map["1"] = 1;
+            else if(a1.id == (*data)["Place2"])
+                map["1"] = 2;
+            else if(a1.id == (*data)["Place3"])
+                map["1"] = 3;
+            else if(a1.id == (*data)["Place4"])
+                map["1"] = 4;
+            else
+                map["1"] = 5;
+            if(a2.id == (*data)["Place1"])
+                map["2"] = 1;
+            else if(a2.id == (*data)["Place2"])
+                map["2"] = 2;
+            else if(a2.id == (*data)["Place3"])
+                map["2"] = 3;
+            else if(a2.id == (*data)["Place4"])
+                map["2"] = 4;
+            else
+                map["2"] = 5;
+            return map["1"] < map["2"];
+        });
+        return;
+    }
+
+    if(rSortRate.contains(x, y)){
+        std::sort(lAthletes.begin(), lAthletes.end(), [this](const athlete &a1, const athlete &a2){
+            QMap<QString, int> map;
+            for(int i = 0; i < lAthletes.count(); i++){
+                if((*data)["Id"][i] == a1.id)
+                    map["1"] = (*data)["Rates"][i].toDouble();
+                if((*data)["Id"][i] == a2.id){
+                    map["2"] = (*data)["Rates"][i].toDouble();
+                }
+            }
+            return map["1"] > map["2"];
+        });
+        return;
+    }
     ///////////////////////////////////////////////
     if(flagHoverDraw && !flagOnMat){
         flagOnMat = true;
+        (*data)["OnMat"] = true;
+        emit sigSaveData();
+        update();
 
-        emit sigOnMAt(0,        //режим - общий круг
-                      data
+        QJsonObject obj;
+        QJsonArray arrId;
+        QJsonArray arrNames;
+        QJsonArray arrTeams;
+        QJsonArray arrRanges;
+        foreach(auto each, lAthletes){
+            arrId.push_back(each.id);
+            arrNames.push_back(each.name);
+            arrTeams.push_back(each.team);
+            arrRanges.push_back(each.range);
+        }
+        obj.insert("Id", arrId);
+        obj.insert("Name", arrNames);
+        obj.insert("Team", arrTeams);
+        obj.insert("Range", arrRanges);
+        QJsonDocument doc(obj);
+        QString strJson(doc.toJson(QJsonDocument::Compact));
+        emit sigOnMat(0,        //режим - общий круг
+                      strJson
                       );
     }
 }

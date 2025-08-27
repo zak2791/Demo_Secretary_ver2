@@ -8,7 +8,7 @@ class CategoryOnMat : public QFrame
 {
     Q_OBJECT
 public:
-    CategoryOnMat(int, int, int, int, QString, QString, QString, QVariant, QWidget* parent = nullptr);
+    CategoryOnMat(int, int, int, int, QString, QString, QString, QString, QWidget* parent = nullptr);
     int getId(void){return id;}
 
 private:
@@ -23,7 +23,7 @@ private:
     QLabel* lblAge;
     QLabel* lblWeight;
     QLabel* lblInfo;
-    QVariant vData;
+    QString data;
 
     virtual void mousePressEvent(QMouseEvent*);
 

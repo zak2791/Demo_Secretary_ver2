@@ -13,8 +13,9 @@ class System_0_Final : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    System_0_Final(QList<athlete>,                  //список финалистов согласно занятым местам (1, 2, 3, 4)
-                   QString                          //данные финальной части
+    System_0_Final(QList<athlete>,                      //список финалистов согласно занятым местам (1, 2, 3, 4)
+                   QJsonObject*,                        //данные общего круга
+                   QJsonObject*                         //данные финальной части
                    );
 
     void setRates(int,                               //режим: 1 - полуфиналы, 2 - финалы
@@ -23,13 +24,14 @@ public:
     void cancelSendOnMat(int);                      //отмена отправки на ковер, 0 - отмена полуфиналов, 1 - отмена финалов
 
 public slots:
-    void setAthletes(QString);               //установить финалистов
+    void setAthletes();               //установить финалистов
 
 private:
     QRectF boundingRect(void) const override;
     void paint(QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 
-    QJsonObject data_final;
+    QJsonObject* data_common;
+    QJsonObject* data_final;
 
     QList<athlete> lAthlete;
     athlete athlete1;
@@ -100,9 +102,9 @@ private:
     bool flagHoverWinThird2 = false;
 
     /*Флаги отправки категорий на ковер*/
-    //bool flagOnMatHalf = false;
+    bool flagOnMatHalf = false;
     //bool flagOnMatHalf2 = false;
-    //bool flagOnMatFinal = false;
+    bool flagOnMatFinal = false;
     //bool flagOnMatThird = false;
 
     /*Флаги наведения мыши на номера жеребьевки полуфиналов и финалов*/
@@ -165,7 +167,8 @@ signals:
     /// 0 - полуфиналы              ///
     /// 1 - финалы                  ///
     ///////////////////////////////////
-    void sigOnMAt(int, QVariant/*data*/);
+    void sigOnMat(int, QString);
+    void sigSaveData(void);
 
 };
 

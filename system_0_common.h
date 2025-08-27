@@ -10,10 +10,10 @@ class System_0_Common : public QGraphicsObject
 {
     Q_OBJECT
 public:
-    System_0_Common(QList<athlete>, QString);
+    System_0_Common(QList<athlete>, QJsonObject*);
     int getHeight(void);
     void setRates(QList<rates>);
-    void clearFlagOnMat(void){flagOnMat = false; update();}
+    void cancelSendOnMat(void);
 
 private:
     QList<athlete> lAthletes;
@@ -23,8 +23,12 @@ private:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent*) override;
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent*) override;
 
-    QJsonObject jObj;
-    QJsonObject data;
+    QJsonObject* data;
+
+    int idPlace1;
+    int idPlace2;
+    int idPlace3;
+    int idPlace4;
 
     int offsetText = 3;
     QList<QRect> lRectDraw;
@@ -54,8 +58,8 @@ private:
     bool flagHoverDraw = false;     //флаг наведения курсора на номера жеребьёвки
 
 signals:
-    void sigPlace(QString);
-    void sigOnMAt(int, QVariant);
+    void sigSaveData(void);
+    void sigOnMat(int, QString);
 
 };
 
