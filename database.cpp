@@ -83,7 +83,7 @@ bool DataBase::createBaseOnMat(QString name){
     QMessageBox msgBox;
 
     QString str = "CREATE TABLE categories "
-          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, "
+          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, status INTEGER,"
           "data TEXT);";
 
     if(!query.exec(str)){
@@ -99,12 +99,12 @@ bool DataBase::createBaseOnMat(QString name){
 }
 
 QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString> > DataBase::getCategories(QString base){
-    if(!db.isOpen())
+    if(db.isOpen())
         db.close();
     db.setDatabaseName(base);
-    QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> lTuple;
+    QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> listData;
     if (!db.open())
-        return QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>>();
+        return listData;
     QMessageBox msgBox;
     QString sqlCategories("SELECT * FROM categories;");
     QString sqlSportsmen("SELECT * FROM sportsmen WHERE id_category = ?; ") ;
@@ -114,7 +114,7 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
         msgBox.setText("Ошибка чтения таблицы категорий " + db.lastError().text());
         msgBox.exec();
         db.close();
-        return QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>>();
+        return listData;
     }
     while(query->next()){
         int id = query->value("id").toInt();
@@ -131,7 +131,7 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
             msgBox.setText("Ошибка чтения спортсмена " + db.lastError().text());
             msgBox.exec();
             db.close();
-            return QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>>();
+            return listData;
         }
         while(q.next()){
             athlete ath;
@@ -141,9 +141,9 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
             ath.range = q.value("range").toString();
             lA.append(ath);
         }
-        lTuple.append(std::tuple(id, id_system, status, lA, data, category, age, weight));
+        listData.append(std::tuple(id, id_system, status, lA, data, category, age, weight));
     }
-    return lTuple;
+    return listData;
 }
 
 /////////////////////////////////////////////////////////////////////////////

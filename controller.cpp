@@ -68,9 +68,9 @@ void Controller::openCompetition(QString name)
     foreach (auto each, lSystem)
         delete each;
     lSystem.clear();
-    QList<std::tuple<int, QString, QString, QString>> lTpl;
-    QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> tpl = base->getCategories(currentBase);
-    foreach(auto each, tpl){
+    QList<std::tuple<int, QString, QString, QString>> listData;
+    //QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> data = base->getCategories(currentBase);
+    foreach(auto each, base->getCategories(currentBase)){
         int id = std::get<0>(each);
         int id_system = std::get<1>(each);
         int status = std::get<2>(each);
@@ -87,7 +87,7 @@ void Controller::openCompetition(QString name)
             connect(this, &Controller::sigCancelSendOnMat, CS, &CompetitionSystem::cancelSendOnMat);
             lSystem.append(CS);
         }
-        lTpl.append(std::tuple(id, category, age, weight));
+        listData.append(std::tuple(id, category, age, weight));
     }
 
     /////////////////////////////////////
@@ -131,7 +131,7 @@ void Controller::openCompetition(QString name)
         emit sigIsertCategoryOnMatFromBase(mat, cat);
     }
 
-    emit sigSetControlPanel(lTpl);
+    emit sigSetControlPanel(listData);
     if(lSystem.isEmpty())
         emit sigCompetition(currentBase, true);
     else
