@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+#include "connectiondialog.h"
 #include "ui_mainwindow.h"
 
 #include <QActionGroup>
@@ -75,6 +76,13 @@ MainWindow::MainWindow(QWidget *parent)
             }
         }
     ;});
+
+    connect(ui->actConnections, &QAction::triggered, this, [this](){
+        ConnectionDialog dlg;
+        int ret = dlg.exec();
+        if(ret == QDialog::Accepted)
+            controller->changeConnection();
+    });
 
 }
 

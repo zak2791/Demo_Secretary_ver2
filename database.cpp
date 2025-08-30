@@ -54,11 +54,48 @@ bool DataBase::createBase(QString name){
         return false;
     }
 
+    name = name.first(name.length() - 3);
+
+    if(!createBaseOnMat(name + "_Mat1.db"))
+        qDebug()<<"Не удалось создать базу ковра 1";
+
+    if(!createBaseOnMat(name + "_Mat2.db"))
+        qDebug()<<"Не удалось создать базу ковра 2";
+
+    if(!createBaseOnMat(name + "_Mat3.db"))
+        qDebug()<<"Не удалось создать базу ковра 3";
+
     return true;
 }
 
-bool DataBase::createBaseOnMat(QString base){
+bool DataBase::createBaseOnMat(QString name){
+    qDebug()<<name;
+    QSqlDatabase db;
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    if(db.isOpen())
+        db.close();
+    db.setDatabaseName(name);
+    if (!db.open())
+        return false;
 
+    QSqlQuery query;
+
+    QMessageBox msgBox;
+
+    QString str = "CREATE TABLE categories "
+          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, "
+          "data TEXT);";
+
+    if(!query.exec(str)){
+        msgBox.setText("Ошибка создания таблицы categories " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return false;
+    }
+
+    db.close();
+
+    return true;
 }
 
 QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString> > DataBase::getCategories(QString base){

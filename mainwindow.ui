@@ -142,8 +142,15 @@
     </property>
     <addaction name="aAdd"/>
    </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <addaction name="actConnections"/>
+   </widget>
    <addaction name="mCompetition"/>
    <addaction name="mAthletes"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="aCreate">
@@ -167,6 +174,11 @@
   <action name="actiondfg">
    <property name="text">
     <string>dfg</string>
+   </property>
+  </action>
+  <action name="actConnections">
+   <property name="text">
+    <string>Настройки подключения</string>
    </property>
   </action>
  </widget>

@@ -12,6 +12,8 @@ Controller::Controller(QObject* parent) : QObject(parent) {
     p = parent;
     //add = new AddingAthletes;
     base = new DataBase;
+    dataController = new DataTransferController(this);
+
 }
 
 Controller::~Controller()
@@ -217,5 +219,10 @@ CompetitionSystem *Controller::getCategory(int id)
     if(each->getId() == id)
         return each;
     return nullptr;
+}
+
+void Controller::changeConnection()
+{
+    qDebug()<<"changeConnection";
 }
 

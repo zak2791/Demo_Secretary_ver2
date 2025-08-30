@@ -1,4 +1,4 @@
-QT       += core gui widgets axcontainer sql
+QT       += core gui widgets axcontainer sql network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,8 +15,10 @@ SOURCES += \
     categorycreator.cpp \
     categoryonmat.cpp \
     competitionsystem.cpp \
+    connectiondialog.cpp \
     controller.cpp \
     database.cpp \
+    datatransfercontroller.cpp \
     jsonconverter.cpp \
     ledwidget.cpp \
     main.cpp \
@@ -33,8 +35,10 @@ HEADERS += \
     categorycreator.h \
     categoryonmat.h \
     competitionsystem.h \
+    connectiondialog.h \
     controller.h \
     database.h \
+    datatransfercontroller.h \
     jsonconverter.h \
     ledwidget.h \
     main.h \
@@ -47,6 +51,7 @@ HEADERS += \
 FORMS += \
     addcompetition.ui \
     categorycontrolpanel.ui \
+    connectiondialog.ui \
     mainwindow.ui
 
 TRANSLATIONS += \

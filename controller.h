@@ -4,6 +4,7 @@
 #include "categoryonmat.h"
 #include "competitionsystem.h"
 #include "database.h"
+#include "datatransfercontroller.h"
 #include "qobject.h"
 //#include "addingathletes.h"
 
@@ -14,6 +15,7 @@ public:
     Controller(QObject* parent = nullptr);
     ~Controller();
     CompetitionSystem* getCategory(int);
+    void changeConnection(void);
 
 public slots:
     void createCompetition(void);
@@ -30,6 +32,7 @@ private:
     QList<CategoryOnMat*> lCategoryOnMat3;
     QString currentBase;
     QObject* p;
+    DataTransferController* dataController;
 
 private slots:
     void sendOnMat(int, int, int, QString, QString, QString, QString);
