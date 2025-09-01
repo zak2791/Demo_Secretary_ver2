@@ -9,6 +9,7 @@ CategoryOnMat::CategoryOnMat(int id_,
                              int id_category_,
                              int id_system_,
                              int mode_,
+                             int _status,
                              QString category,
                              QString age,
                              QString weight,
@@ -19,6 +20,7 @@ CategoryOnMat::CategoryOnMat(int id_,
     id_category = id_category_,
     id_system = id_system_;
     mode = mode_;
+    status = _status;
     sCategory = category;
     sAge = age;
     sWeight = weight;
@@ -96,9 +98,19 @@ CategoryOnMat::CategoryOnMat(int id_,
 
     setLayout(layout);
 
+    connect(btnSend, &QPushButton::clicked, this, &CategoryOnMat::sigSendData);
+    connect(btnSend, &QPushButton::clicked, this, [this](){getDataToSend();});
+
+}
+
+QString CategoryOnMat::getDataToSend()
+{
+    qDebug()<<data;
+    return data;
 }
 
 void CategoryOnMat::mousePressEvent(QMouseEvent *)
 {
+    qDebug()<<sCategory<<sAge<<sWeight;
     emit sigClick(sCategory, sAge, sWeight);
 }

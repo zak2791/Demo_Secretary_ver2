@@ -8,14 +8,16 @@ class CategoryOnMat : public QFrame
 {
     Q_OBJECT
 public:
-    CategoryOnMat(int, int, int, int, QString, QString, QString, QString, QWidget* parent = nullptr);
+    CategoryOnMat(int, int, int, int, int, QString, QString, QString, QString, QWidget* parent = nullptr);
     int getId(void){return id;}
+    QString getDataToSend(void);
 
 private:
     int id;
     int id_category;
     int id_system;
     int mode;
+    int status;    // 0 - исходный, 1  - данные на ковер доставлены, 2 - в работе
     QString sCategory;
     QString sAge;
     QString sWeight;
@@ -30,6 +32,8 @@ private:
 signals:
     void sigRemoveFromMat(int);
     void sigClick(QString, QString, QString);
+    void sigSendData(void);\
+
 };
 
 #endif // CATEGORYONMAT_H

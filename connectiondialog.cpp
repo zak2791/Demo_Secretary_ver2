@@ -1,5 +1,7 @@
 #include "connectiondialog.h"
+#include "qhostaddress.h"
 #include "ui_connectiondialog.h"
+#include <QNetworkInterface>
 
 ConnectionDialog::ConnectionDialog(QWidget *parent)
     : QDialog(parent)
@@ -7,12 +9,22 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->cbIPLocalNet->addItem("");
+
+    QStringList lAddr;
+    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
+    for (QHostAddress &address: QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost){
+            lAddr.append(address.toString());
+            ui->cbIPLocalNet->addItem(address.toString());
+        }
+    }
+
+
     settings = new QSettings("settings.ini", QSettings::IniFormat, this);
     settings->beginGroup("Connections");
 
-    ip1 = settings->value("ip1", "127.0.0.1").toString();
-    ip2 = settings->value("ip2", "127.0.0.1").toString();
-    ip3 = settings->value("ip3", "127.0.0.1").toString();
+    ipLocal = settings->value("ipLocal", "").toString();
 
     port1 = settings->value("port1", 5001).toInt();
     port2 = settings->value("port2", 5001).toInt();
@@ -24,17 +36,27 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
     settings->endGroup();
 
-    ui->leMat1->setText(ip1);
-    ui->leMat2->setText(ip2);
-    ui->leMat3->setText(ip3);
+    int index = ui->cbIPLocalNet->findText(ipLocal);
+    if(index != -1){
+        ui->cbIPLocalNet->setCurrentIndex(index);
+    }
+
+    connect(ui->cbIPLocalNet, &QComboBox::currentTextChanged, this, [this](QString text){
+        ipLocal = text;
+    });
+
+    // ui->leMat1->setText(ip1);
+    // ui->leMat2->setText(ip2);
+    // ui->leMat3->setText(ip3);
+
 
     ui->sbMat1->setValue(port1);
     ui->sbMat2->setValue(port2);
     ui->sbMat3->setValue(port3);
 
-    connect(ui->leMat1, &QLineEdit::editingFinished, this, [this](){ip1 = ui->leMat1->text();});
-    connect(ui->leMat2, &QLineEdit::editingFinished, this, [this](){ip2 = ui->leMat2->text();});
-    connect(ui->leMat3, &QLineEdit::editingFinished, this, [this](){ip3 = ui->leMat3->text();});
+    // connect(ui->leMat1, &QLineEdit::editingFinished, this, [this](){ip1 = ui->leMat1->text();});
+    // connect(ui->leMat2, &QLineEdit::editingFinished, this, [this](){ip2 = ui->leMat2->text();});
+    // connect(ui->leMat3, &QLineEdit::editingFinished, this, [this](){ip3 = ui->leMat3->text();});
 
     connect(ui->sbMat1, &QSpinBox::valueChanged, this, [this](int value){port1 = value;});
     connect(ui->sbMat2, &QSpinBox::valueChanged, this, [this](int value){port2 = value;});
@@ -54,9 +76,7 @@ void ConnectionDialog::slotAccept()
     settings = new QSettings("settings.ini", QSettings::IniFormat, this);
     settings->beginGroup("Connections");
 
-    settings->setValue("ip1", ip1);
-    settings->setValue("ip2", ip2);
-    settings->setValue("ip3", ip3);
+    settings->setValue("ipLocal", ipLocal);
 
     settings->setValue("port1", port1);
     settings->setValue("port2", port2);

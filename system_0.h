@@ -16,7 +16,6 @@ class System_0 : public CompetitionSystem
 public:
     System_0(int,
              int,
-             int,
              QList<athlete>,
              QString,
              QString, QString, QString);

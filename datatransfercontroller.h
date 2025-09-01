@@ -14,6 +14,8 @@ public:
 
 private:
 
+    QString ipLocal;
+
     QString ip1;
     QString ip2;
     QString ip3;

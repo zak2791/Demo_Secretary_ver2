@@ -103,6 +103,7 @@ int MainWindow::getMat()
 
 void MainWindow::clickCategoryOnMat(QString c, QString a, QString w)
 {
+    qDebug()<<c<<a<<w;
     panel->clickCategoryOnMat(c, a, w);
 }
 

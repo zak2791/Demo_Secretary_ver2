@@ -10,7 +10,6 @@ class CompetitionSystem : public QGraphicsScene
 public:
     CompetitionSystem(int,
                       int,
-                      int,
                       QList<athlete>,
                       QString,
                       QString c,
@@ -44,7 +43,6 @@ public slots:
 protected:
     int id;                     //id категории
     int id_system;              //система проведения соревнований
-    int status;
     //int sendingFlag;          //флаг ожидания отправки данных на ковер
     QList<athlete> lAthlete;    //
     QString data;              //

@@ -14,7 +14,6 @@ public:
     bool createBaseOnMat(QString);      //создаёт базу данных для переноса на компьютер на ковре
     QList<std::tuple<int,               //id - идентификатор весовой категории
                     int,                //id_system - идентификатор системы проведения соревнований
-                    int,                //status -
                     QList<athlete>,     //athletes - список спортсменов
                     QString,            //data - оценки, места и т. д.
                     QString,            //category - мужчины, женщины, ...
@@ -27,6 +26,7 @@ public:
                      int,                //id_system
                      int,                //mode - режим: первый круг, полуфинал, финал, ...
                      int,                //mat - номер ковра
+                     int,                //status
                      QString,            //category
                      QString,            //age
                      QString,            //weight

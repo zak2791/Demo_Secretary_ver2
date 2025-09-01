@@ -3,16 +3,21 @@
 #include "qtimer.h"
 
 #include <QNetworkDatagram>
-#include <QNetworkInterface>
+
 
 DataTransferController::DataTransferController(QObject* parent):QObject(parent){
+
+
+
     QSettings settings("settings.ini", QSettings::IniFormat);
 
     settings.beginGroup("Connections");
 
-    ip1 = settings.value("ip1", "127.0.0.1").toString();
-    ip2 = settings.value("ip2", "127.0.0.1").toString();
-    ip3 = settings.value("ip3", "127.0.0.1").toString();
+    ipLocal = settings.value("ipLocal", "").toString();
+
+    // ip1 = settings.value("ip1", "127.0.0.1").toString();
+    // ip2 = settings.value("ip2", "127.0.0.1").toString();
+    // ip3 = settings.value("ip3", "127.0.0.1").toString();
 
     port1 = settings.value("port1", 5001).toInt();
     port2 = settings.value("port2", 5001).toInt();
@@ -48,20 +53,34 @@ DataTransferController::DataTransferController(QObject* parent):QObject(parent){
         qDebug()<<"error 1 = "<<error;
     });
 
-    const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
-    for (const QHostAddress &address: QNetworkInterface::allAddresses()) {
-        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != localhost)
-            qDebug() << address.toString();
-    }
+
 
     QTimer* timer1 = new QTimer(this);
     connect(timer1, &QTimer::timeout, this, [this](){
-        QNetworkDatagram datagram("hello", QHostAddress("192.168.3.255"), udpPort1);
+        if(ipLocal == "") return;
+        int index = ipLocal.lastIndexOf(".");
+        QString ipAddress = ipLocal.first(index) + ".255";
+        qDebug()<<ipAddress;
+        QNetworkDatagram datagram("hello", QHostAddress(ipAddress), udpPort1);
         qDebug()<<udpSocket->writeDatagram(datagram)<<ip1<<udpPort1;
     });
     timer1->start(5000);
     qDebug()<<"start timer";
+    QByteArray data("Hello world!");
+    qint16 checksum = qChecksum(data);
 
+    char a = (checksum & 0xf000)>>12;
+    char b = (checksum & 0x0f00)>>8;
+    char c = (checksum & 0x00f0)>>4;
+    char d = checksum & 0x000f;
+    data.append(a).append(b).append(c).append(d);
+    qDebug()<<data<<checksum;
+    char _a = data.at(data.length() - 4);
+    char _b = data.at(data.length() - 3);
+    char _c = data.at(data.length() - 2);
+    char _d = data.at(data.length() - 1);
+    qint16 check = ((qint16)_a)<<12 | ((qint16)_b)<<8 | ((qint16)_c)<<4 | (qint16)_d;
+    qDebug()<<check;
 }
 
 void DataTransferController::cangeConnection()
@@ -70,9 +89,11 @@ void DataTransferController::cangeConnection()
 
     settings.beginGroup("Connections");
 
-    ip1 = settings.value("ip1", "127.0.0.1").toString();
-    ip2 = settings.value("ip2", "127.0.0.1").toString();
-    ip3 = settings.value("ip3", "127.0.0.1").toString();
+    ipLocal = settings.value("ipLocal", "").toString();
+
+    // ip1 = settings.value("ip1", "127.0.0.1").toString();
+    // ip2 = settings.value("ip2", "127.0.0.1").toString();
+    // ip3 = settings.value("ip3", "127.0.0.1").toString();
 
     port1 = settings.value("port1", 5001).toInt();
     port2 = settings.value("port2", 5002).toInt();

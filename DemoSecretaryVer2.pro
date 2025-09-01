@@ -1,4 +1,4 @@
-QT       += core gui widgets axcontainer sql network
+QT += core gui widgets axcontainer sql network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

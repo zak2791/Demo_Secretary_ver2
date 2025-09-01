@@ -45,6 +45,7 @@ bool DataBase::createBase(QString name){
 
     str = "CREATE TABLE categories_on_mats "
           "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, mat INTEGER, "
+          "status INTEGER DEFAULT 0, "
           "data TEXT);";
 
     if(!query->exec(str)){
@@ -56,24 +57,24 @@ bool DataBase::createBase(QString name){
 
     name = name.first(name.length() - 3);
 
-    if(!createBaseOnMat(name + "_Mat1.db"))
+    QFile file;
+    file.setFileName(name + "_Mat1.db");
+    if(!file.open(QIODeviceBase::WriteOnly))
         qDebug()<<"Не удалось создать базу ковра 1";
-
-    if(!createBaseOnMat(name + "_Mat2.db"))
+    file.close();
+    file.setFileName(name + "_Mat2.db");
+    if(!file.open(QIODeviceBase::WriteOnly))
         qDebug()<<"Не удалось создать базу ковра 2";
-
-    if(!createBaseOnMat(name + "_Mat3.db"))
+    file.close();
+    file.setFileName(name + "_Mat3.db");
+    if(!file.open(QIODeviceBase::WriteOnly))
         qDebug()<<"Не удалось создать базу ковра 3";
+    file.close();
 
     return true;
 }
 
 bool DataBase::createBaseOnMat(QString name){
-    qDebug()<<name;
-    QSqlDatabase db;
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    if(db.isOpen())
-        db.close();
     db.setDatabaseName(name);
     if (!db.open())
         return false;
@@ -83,7 +84,7 @@ bool DataBase::createBaseOnMat(QString name){
     QMessageBox msgBox;
 
     QString str = "CREATE TABLE categories "
-          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, status INTEGER,"
+          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, status INTEGER DEFAULT 0,"
           "data TEXT);";
 
     if(!query.exec(str)){
@@ -98,18 +99,17 @@ bool DataBase::createBaseOnMat(QString name){
     return true;
 }
 
-QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString> > DataBase::getCategories(QString base){
+QList<std::tuple<int, int, QList<athlete>, QString, QString, QString, QString> > DataBase::getCategories(QString base){
     if(db.isOpen())
         db.close();
     db.setDatabaseName(base);
-    QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QString>> listData;
+    QList<std::tuple<int, int, QList<athlete>, QString, QString, QString, QString>> listData;
     if (!db.open())
         return listData;
     QMessageBox msgBox;
     QString sqlCategories("SELECT * FROM categories;");
     QString sqlSportsmen("SELECT * FROM sportsmen WHERE id_category = ?; ") ;
     QSqlQuery q;
-    //q.exec(" PRAGMA synchronous = OFF, journal_mode = MEMORY");
     if(!query->exec(sqlCategories)){
         msgBox.setText("Ошибка чтения таблицы категорий " + db.lastError().text());
         msgBox.exec();
@@ -119,7 +119,7 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
     while(query->next()){
         int id = query->value("id").toInt();
         int id_system = query->value("id_system").toInt();
-        int status = query->value("status").toInt();
+        //int status = query->value("status").toInt();
         QList<athlete> lA;
         QString data = query->value("data").toString();
         QString category = query->value("category").toString();
@@ -141,7 +141,7 @@ QList<std::tuple<int, int, int, QList<athlete>, QString, QString, QString, QStri
             ath.range = q.value("range").toString();
             lA.append(ath);
         }
-        listData.append(std::tuple(id, id_system, status, lA, data, category, age, weight));
+        listData.append(std::tuple(id, id_system, lA, data, category, age, weight));
     }
     return listData;
 }
@@ -272,11 +272,11 @@ QList<int> DataBase::deleteCategoryFromMat(int id_category_on_mat)
     return {id_category, mode};
 }
 
-QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString> > DataBase::getCategoriesOnMats()
+QList<std::tuple<int, int, int, int, int, int, QString, QString, QString, QString> > DataBase::getCategoriesOnMats()
 {
     QMessageBox msgBox;
-    QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>> lTpl;
-    QString sql("SELECT A.id, A.id_category, A.id_system, A.mode, A.mat, A.data, B.id, B.category, B.age, B.weight FROM categories_on_mats A "
+    QList<std::tuple<int, int, int, int, int, int, QString, QString, QString, QString>> lTpl;
+    QString sql("SELECT A.id, A.id_category, A.id_system, A.mode, A.mat, A.status, A.data, B.id, B.category, B.age, B.weight FROM categories_on_mats A "
                 "LEFT JOIN "
                 "categories B "
                 "ON B.id = A.id_category;");
@@ -285,7 +285,7 @@ QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString> > 
         qDebug()<<query->lastError().text();
         msgBox.exec();
         db.close();
-        return QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString>>();
+        return QList<std::tuple<int, int, int, int, int, int, QString, QString, QString, QString>>();
     }
     while(query->next()){
         int id              = query->value(0).toInt();
@@ -293,12 +293,13 @@ QList<std::tuple<int, int, int, int, int, QString, QString, QString, QString> > 
         int id_system       = query->value(2).toInt();
         int mode            = query->value(3).toInt();
         int mat             = query->value(4).toInt();
-        QString data        = query->value(5).toString();
-        QString category    = query->value(7).toString();
-        QString age         = query->value(8).toString();
-        QString weight      = query->value(9).toString();
-        lTpl.append(std::tuple<int, int, int, int, int, QString, QString, QString, QString>
-                    (id, id_category, id_system, mode, mat, data, category, age, weight));
+        int status          = query->value(5).toInt();
+        QString data        = query->value(7).toString();
+        QString category    = query->value(8).toString();
+        QString age         = query->value(9).toString();
+        QString weight      = query->value(10).toString();
+        lTpl.append(std::tuple<int, int, int, int, int, int, QString, QString, QString, QString>
+                    (id, id_category, id_system, mode, mat, status, category, age, weight, data));
     }
     return lTpl;
 }

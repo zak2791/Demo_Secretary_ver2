@@ -18,6 +18,7 @@ public:
                                   QWidget *parent = nullptr);
     ~CategoryControlPanel();
     int getId(void);
+    void clickCategoryOnMat(QString, QString, QString);
 
 private:
     Ui::CategoryControlPanel *ui;
@@ -31,9 +32,6 @@ private:
     int getId(QString, QString, QString);
     QSpacerItem* spacerItemAge = nullptr;
     QSpacerItem* spacerItemWeight = nullptr;
-
-public slots:
-        void clickCategoryOnMat(QString, QString, QString);
 
 private slots:
     void slotRbCategory(bool);

@@ -4,13 +4,12 @@
 
 System_0::System_0(int _id,
                    int _id_system,
-                   int _status,
                    QList<athlete> list,
                    QString _data,
                    QString c,
                    QString a,
                    QString w)  :
-    CompetitionSystem(_id, _id_system, _status, list, _data, c, a, w){
+    CompetitionSystem(_id, _id_system, list, _data, c, a, w){
 
     //final_0 final_data = _data.value<final_0>();        //?????????????????????????????????????error need json!!!!
     //bool status;

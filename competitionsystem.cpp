@@ -2,7 +2,6 @@
 
 CompetitionSystem::CompetitionSystem(int _id,
                                      int _id_system,
-                                     int _status,
                                      QList<athlete> list,
                                      QString _data,
                                      QString _category,
@@ -10,9 +9,8 @@ CompetitionSystem::CompetitionSystem(int _id,
                                      QString _weight) {
     id = _id;
     id_system = _id_system;
-    status = _status;
     lAthlete = list;
-    //data = _data;
+    data = _data;
     category = _category;
     age = _age;
     weight = _weight;

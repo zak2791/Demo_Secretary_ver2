@@ -20,9 +20,7 @@ private:
     Ui::ConnectionDialog *ui;
 
     QSettings* settings;
-    QString ip1;
-    QString ip2;
-    QString ip3;
+    QString ipLocal;
 
     int udpPort1;
     int udpPort2;

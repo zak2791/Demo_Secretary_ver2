@@ -37,6 +37,7 @@ private:
 private slots:
     void sendOnMat(int, int, int, QString, QString, QString, QString);
     void removeCategoryFromMat(int);
+    void sendDataToMat(void);
 
 signals:
     ///////////////////////////////////////////////////////////
