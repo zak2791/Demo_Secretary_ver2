@@ -22,13 +22,9 @@ private:
     QSettings* settings;
     QString ipLocal;
 
-    int udpPort1;
-    int udpPort2;
-    int udpPort3;
+    int udpPort;
 
-    int port1;
-    int port2;
-    int port3;
+    int tcpPort;
 
 private slots:
     void slotAccept(void);

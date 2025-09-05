@@ -26,13 +26,10 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
     ipLocal = settings->value("ipLocal", "").toString();
 
-    port1 = settings->value("port1", 5001).toInt();
-    port2 = settings->value("port2", 5001).toInt();
-    port3 = settings->value("port3", 5001).toInt();
+    tcpPort = settings->value("tcpPort", 5001).toInt();
 
-    udpPort1 = settings->value("udpPort1", 5000).toInt();
-    udpPort2 = settings->value("udpPort2", 5000).toInt();
-    udpPort3 = settings->value("udpPort3", 5000).toInt();
+    udpPort = settings->value("udpPort", 5000).toInt();
+
 
     settings->endGroup();
 
@@ -50,17 +47,16 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     // ui->leMat3->setText(ip3);
 
 
-    ui->sbMat1->setValue(port1);
-    ui->sbMat2->setValue(port2);
-    ui->sbMat3->setValue(port3);
+    ui->sbTcp->setValue(tcpPort);
+    ui->sbUdp->setValue(udpPort);
 
     // connect(ui->leMat1, &QLineEdit::editingFinished, this, [this](){ip1 = ui->leMat1->text();});
     // connect(ui->leMat2, &QLineEdit::editingFinished, this, [this](){ip2 = ui->leMat2->text();});
     // connect(ui->leMat3, &QLineEdit::editingFinished, this, [this](){ip3 = ui->leMat3->text();});
 
-    connect(ui->sbMat1, &QSpinBox::valueChanged, this, [this](int value){port1 = value;});
-    connect(ui->sbMat2, &QSpinBox::valueChanged, this, [this](int value){port2 = value;});
-    connect(ui->sbMat3, &QSpinBox::valueChanged, this, [this](int value){port3 = value;});
+    connect(ui->sbTcp, &QSpinBox::valueChanged, this, [this](int value){tcpPort = value;});
+    connect(ui->sbUdp, &QSpinBox::valueChanged, this, [this](int value){udpPort = value;});
+
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ConnectionDialog::slotAccept);
 
@@ -78,13 +74,8 @@ void ConnectionDialog::slotAccept()
 
     settings->setValue("ipLocal", ipLocal);
 
-    settings->setValue("port1", port1);
-    settings->setValue("port2", port2);
-    settings->setValue("port3", port3);
-
-    settings->setValue("udpPort1", udpPort1);
-    settings->setValue("udpPort2", udpPort2);
-    settings->setValue("udpPort3", udpPort3);
+    settings->setValue("udpPort", udpPort);
+    settings->setValue("tcpPort", tcpPort);
 
     settings->endGroup();
     accept();

@@ -12,7 +12,7 @@ Controller::Controller(QObject* parent) : QObject(parent) {
     p = parent;
     //add = new AddingAthletes;
     base = new DataBase;
-    dataController = new DataTransferController(this);
+    dataController = new DataTransferController(&currentBase, this);
 
 }
 
@@ -79,7 +79,6 @@ void Controller::openCompetition(QString name)
         QString category = std::get<4>(each);
         QString age = std::get<5>(each);
         QString weight = std::get<6>(each);
-
         if(id_system == 0){
             CompetitionSystem* CS = new System_0(id, id_system, lA, data, category, age, weight);
             connect(CS, &CompetitionSystem::sigSaveData, base, &DataBase::writeData);
@@ -110,9 +109,9 @@ void Controller::openCompetition(QString name)
     QList<std::tuple<int, int, int, int, int, int, QString, QString, QString, QString>> lCatOnMat = base->getCategoriesOnMats();
     foreach(auto each, lCatOnMat){
         int mat = std::get<4>(each);
-        qDebug()<<"mat = "<<mat;
+        //qDebug()<<"data = "<<std::get<9>(each);
         CategoryOnMat* cat = new CategoryOnMat(std::get<0>(each),   //id_onMat
-                                               std::get<1>(each),   //id
+                                               std::get<1>(each),   //id_base_category
                                                std::get<2>(each),   //id_system
                                                std::get<3>(each),   //mode
                                                std::get<5>(each),   //status
@@ -157,10 +156,10 @@ void Controller::addAthletes()
 
 void Controller::sendOnMat(int id, int id_system, int mode , QString category, QString age, QString weight, QString data)
 {
-    qDebug()<<"sendOnMat!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    //qDebug()<<"sendOnMat!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     int mat = static_cast<MainWindow*>(p)->getMat();
     int id_onMat = base->createCategoryOnMat(id, id_system, mode, mat, data);
-    qDebug()<<"id_onMat = "<<id_onMat<<mode;
+    //qDebug()<<"id_onMat = "<<id_onMat<<mode;
     CategoryOnMat* cat = new CategoryOnMat(id_onMat, id, id_system, mode, 0, category, age, weight, data);
     connect(cat, &CategoryOnMat::sigRemoveFromMat, this, &Controller::removeCategoryFromMat);
     connect(cat, &CategoryOnMat::sigClick, static_cast<MainWindow*>(p), &MainWindow::clickCategoryOnMat);
@@ -220,7 +219,33 @@ void Controller::removeCategoryFromMat(int id)
 
 void Controller::sendDataToMat()
 {
-    qDebug()<<"sendDataToMat";
+    QList<std::tuple<int, QString>> listData;
+    QList<int> listId;
+    foreach(auto each, lCategoryOnMat1){
+        int id = each->getId();
+        QString data = each->getDataToSend();
+        if(data == "") continue;
+        listData.append({id, data});
+    }
+    listId = dataController->sendData(1, listData);
+    listData.clear();
+    foreach(auto each, lCategoryOnMat2){
+        int id = each->getId();
+        QString data = each->getDataToSend();
+        if(data == "") continue;
+        listData.append({id, data});
+    }
+    listId += dataController->sendData(2, listData);
+    listData.clear();
+    foreach(auto each, lCategoryOnMat3){
+        int id = each->getId();
+        QString data = each->getDataToSend();
+        if(data == "") continue;
+        listData.append({id, data});
+    }
+    listId += dataController->sendData(3, listData);
+    qDebug()<<listId;
+
 }
 
 CompetitionSystem *Controller::getCategory(int id)
@@ -233,6 +258,6 @@ CompetitionSystem *Controller::getCategory(int id)
 
 void Controller::changeConnection()
 {
-    qDebug()<<"changeConnection";
+    dataController->changeConnection();
 }
 

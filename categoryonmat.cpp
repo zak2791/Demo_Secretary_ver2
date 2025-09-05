@@ -2,6 +2,8 @@
  #include "categoryonmat.h"
 #include "ledwidget.h"
 #include "qboxlayout.h"
+#include "qjsondocument.h"
+#include "qjsonobject.h"
 #include "qlabel.h"
 #include "qpushbutton.h"
 
@@ -99,18 +101,28 @@ CategoryOnMat::CategoryOnMat(int id_,
     setLayout(layout);
 
     connect(btnSend, &QPushButton::clicked, this, &CategoryOnMat::sigSendData);
-    connect(btnSend, &QPushButton::clicked, this, [this](){getDataToSend();});
 
 }
 
 QString CategoryOnMat::getDataToSend()
 {
-    qDebug()<<data;
-    return data;
+    if(status > 0) return "";   //если категория уже отправлена на ковер
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+    QJsonObject obj = doc.object();
+    QJsonObject mainObj;
+    mainObj.insert("Id_system", id_system);
+    mainObj.insert("Mode", mode);
+    mainObj.insert("Id_category", id);
+    mainObj.insert("Category", sCategory);
+    mainObj.insert("Age", sAge);
+    mainObj.insert("Weight", sWeight);
+    mainObj.insert("Data", obj);
+    doc = QJsonDocument (mainObj);
+    QString jsonString = doc.toJson(QJsonDocument::Compact);
+    return jsonString;
 }
 
 void CategoryOnMat::mousePressEvent(QMouseEvent *)
 {
-    qDebug()<<sCategory<<sAge<<sWeight;
     emit sigClick(sCategory, sAge, sWeight);
 }

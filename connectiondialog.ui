@@ -29,49 +29,11 @@
     <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
    </property>
   </widget>
-  <widget class="QSpinBox" name="sbMat1">
+  <widget class="QSpinBox" name="sbTcp">
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>50</y>
-     <width>91</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>1000</number>
-   </property>
-   <property name="maximum">
-    <number>50000</number>
-   </property>
-   <property name="value">
-    <number>5001</number>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="sbMat2">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>110</y>
-     <width>91</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>1000</number>
-   </property>
-   <property name="maximum">
-    <number>50000</number>
-   </property>
-   <property name="value">
-    <number>5001</number>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="sbMat3">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>170</y>
+     <y>140</y>
      <width>91</width>
      <height>22</height>
     </rect>
@@ -90,7 +52,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>90</y>
+     <y>100</y>
      <width>141</width>
      <height>41</height>
     </rect>
@@ -107,46 +69,20 @@
    <property name="geometry">
     <rect>
      <x>180</x>
-     <y>30</y>
+     <y>120</y>
      <width>91</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Порт ковра 1</string>
+    <string>TCP порт</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>90</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Порт ковра 2</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_6">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>150</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Порт ковра 3</string>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="sbUdpMat3">
+  <widget class="QSpinBox" name="sbUdp">
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>170</y>
+     <y>140</y>
      <width>91</width>
      <height>22</height>
     </rect>
@@ -158,78 +94,14 @@
     <number>50000</number>
    </property>
    <property name="value">
-    <number>5001</number>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="sbUdpMat2">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>110</y>
-     <width>91</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>1000</number>
-   </property>
-   <property name="maximum">
-    <number>50000</number>
-   </property>
-   <property name="value">
-    <number>5001</number>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="sbUdpMat1">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>50</y>
-     <width>91</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>1000</number>
-   </property>
-   <property name="maximum">
-    <number>50000</number>
-   </property>
-   <property name="value">
-    <number>5001</number>
+    <number>5000</number>
    </property>
   </widget>
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>30</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>UDP порт</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>90</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>UDP порт</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>150</y>
+     <y>120</y>
      <width>91</width>
      <height>16</height>
     </rect>

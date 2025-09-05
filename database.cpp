@@ -55,22 +55,33 @@ bool DataBase::createBase(QString name){
         return false;
     }
 
-    name = name.first(name.length() - 3);
+    db.close();
+    QString name1 = name.first(name.length() - 3)  + "_Mat1.db";
 
-    QFile file;
-    file.setFileName(name + "_Mat1.db");
-    if(!file.open(QIODeviceBase::WriteOnly))
+    if(!createBaseOnMat(name.first(name.length() - 3)  + "_Mat1.db"))
         qDebug()<<"Не удалось создать базу ковра 1";
-    file.close();
-    file.setFileName(name + "_Mat2.db");
-    if(!file.open(QIODeviceBase::WriteOnly))
+    if(!createBaseOnMat(name.first(name.length() - 3)  + "_Mat2.db"))
         qDebug()<<"Не удалось создать базу ковра 2";
-    file.close();
-    file.setFileName(name + "_Mat3.db");
-    if(!file.open(QIODeviceBase::WriteOnly))
+    if(!createBaseOnMat(name.first(name.length() - 3)  + "_Mat3.db"))
         qDebug()<<"Не удалось создать базу ковра 3";
-    file.close();
 
+    // QFile file;
+    // file.setFileName(name + "_Mat1.db");
+    // if(!file.open(QIODeviceBase::WriteOnly))
+    //     qDebug()<<"Не удалось создать базу ковра 1";
+    // file.close();
+    // file.setFileName(name + "_Mat2.db");
+    // if(!file.open(QIODeviceBase::WriteOnly))
+    //     qDebug()<<"Не удалось создать базу ковра 2";
+    // file.close();
+    // file.setFileName(name + "_Mat3.db");
+    // if(!file.open(QIODeviceBase::WriteOnly))
+    //     qDebug()<<"Не удалось создать базу ковра 3";
+    // file.close();
+
+    db.setDatabaseName(name);
+    if (!db.open())
+        return false;
     return true;
 }
 
@@ -89,6 +100,17 @@ bool DataBase::createBaseOnMat(QString name){
 
     if(!query.exec(str)){
         msgBox.setText("Ошибка создания таблицы categories " + db.lastError().text());
+        msgBox.exec();
+        db.close();
+        return false;
+    }
+
+    str = "CREATE TABLE referee "
+          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_referee INTEGER, name TEXT, region TEXT, range TEXT,"
+          "data TEXT);";
+
+    if(!query.exec(str)){
+        msgBox.setText("Ошибка создания таблицы referee " + db.lastError().text());
         msgBox.exec();
         db.close();
         return false;
@@ -294,7 +316,7 @@ QList<std::tuple<int, int, int, int, int, int, QString, QString, QString, QStrin
         int mode            = query->value(3).toInt();
         int mat             = query->value(4).toInt();
         int status          = query->value(5).toInt();
-        QString data        = query->value(7).toString();
+        QString data        = query->value(6).toString();
         QString category    = query->value(8).toString();
         QString age         = query->value(9).toString();
         QString weight      = query->value(10).toString();

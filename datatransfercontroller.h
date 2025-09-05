@@ -9,30 +9,29 @@ class DataTransferController : public QObject
 {
     Q_OBJECT
 public:
-    DataTransferController(QObject* parent = nullptr);
-    void cangeConnection(void);
+    DataTransferController(QString*, QObject* parent = nullptr);
+    void changeConnection(void);
+    QList<int> sendData(int, QList<std::tuple<int, QString>>);
 
 private:
 
+    QString* currentCompetitionTitle;
     QString ipLocal;
 
-    QString ip1;
-    QString ip2;
-    QString ip3;
+    QHostAddress ip1;
+    QHostAddress ip2;
+    QHostAddress ip3;
 
-    int udpPort1;
-    int udpPort2;
-    int udpPort3;
+    int udpPort;
 
-    int port1;
-    int port2;
-    int port3;
+    int tcpPort;
 
-    QTcpSocket* socketMat1;
-    QTcpSocket* socketMat2;
-    QTcpSocket* socketMat3;
+    QTcpSocket* tcpSocket;
 
     QUdpSocket* udpSocket;
+
+    QByteArray addCheckSum(QString);
+    QString controlCheckSum(QByteArray);
 
 };
 
