@@ -95,8 +95,15 @@ bool DataBase::createBaseOnMat(QString name){
     QMessageBox msgBox;
 
     QString str = "CREATE TABLE categories "
-          "(id INTEGER PRIMARY KEY AUTOINCREMENT, id_category INTEGER, id_system INTEGER, mode INTEGER, status INTEGER DEFAULT 0,"
-          "data TEXT);";
+          "(id INTEGER PRIMARY KEY AUTOINCREMENT, "
+           "id_category INTEGER, "
+           "id_system INTEGER, "
+           "mode INTEGER, "
+           "status INTEGER DEFAULT 0, "
+           "category TEXT, "
+           "age TEXT, "
+           "weight TEXT, "
+           "data TEXT);";
 
     if(!query.exec(str)){
         msgBox.setText("Ошибка создания таблицы categories " + db.lastError().text());
@@ -269,7 +276,7 @@ QList<int> DataBase::deleteCategoryFromMat(int id_category_on_mat)
 {
     QMessageBox msgBox;
     QString sql("SELECT id_category, mode FROM categories_on_mats WHERE id = %1 ;");
-    sql = sql.arg(QString::number(id_category_on_mat));;
+    sql = sql.arg(QString::number(id_category_on_mat));
     if(!query->exec(sql)){
         msgBox.setText("Ошибка чтения categories_on_mats " + db.lastError().text());
         msgBox.exec();
