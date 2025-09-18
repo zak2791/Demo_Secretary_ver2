@@ -8,17 +8,18 @@ class LEDWidget : public QWidget {
 
 public:
     LEDWidget(int, QWidget* parent = nullptr);
+    void turnOnOff(bool);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
 
     void resizeEvent(QResizeEvent* event) override;
 
-private slots:
-    void setStatus(int);
+// private slots:
+//     void setStatus(int);
 
 private:
-    int status;    // Состояние светодиода 0, 1
+    bool status;    // Состояние светодиода
     int mode;       // Режим: 0 - серый - зелёный
                     //        1 - серый - красный
                     //        2 - красный - зелёный

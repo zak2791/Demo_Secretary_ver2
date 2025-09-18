@@ -56,7 +56,6 @@ bool DataBase::createBase(QString name){
     }
 
     db.close();
-    QString name1 = name.first(name.length() - 3)  + "_Mat1.db";
 
     if(!createBaseOnMat(name.first(name.length() - 3)  + "_Mat1.db"))
         qDebug()<<"Не удалось создать базу ковра 1";
@@ -64,20 +63,6 @@ bool DataBase::createBase(QString name){
         qDebug()<<"Не удалось создать базу ковра 2";
     if(!createBaseOnMat(name.first(name.length() - 3)  + "_Mat3.db"))
         qDebug()<<"Не удалось создать базу ковра 3";
-
-    // QFile file;
-    // file.setFileName(name + "_Mat1.db");
-    // if(!file.open(QIODeviceBase::WriteOnly))
-    //     qDebug()<<"Не удалось создать базу ковра 1";
-    // file.close();
-    // file.setFileName(name + "_Mat2.db");
-    // if(!file.open(QIODeviceBase::WriteOnly))
-    //     qDebug()<<"Не удалось создать базу ковра 2";
-    // file.close();
-    // file.setFileName(name + "_Mat3.db");
-    // if(!file.open(QIODeviceBase::WriteOnly))
-    //     qDebug()<<"Не удалось создать базу ковра 3";
-    // file.close();
 
     db.setDatabaseName(name);
     if (!db.open())
@@ -142,7 +127,6 @@ QList<std::tuple<int, int, QList<athlete>, QString, QString, QString, QString> >
     if(!query->exec(sqlCategories)){
         msgBox.setText("Ошибка чтения таблицы категорий " + db.lastError().text());
         msgBox.exec();
-        db.close();
         return listData;
     }
     while(query->next()){
@@ -202,14 +186,6 @@ bool DataBase::addCategories(QList<QStringList> list)
         query->bindValue(2, age);
         query->bindValue(3, weight);
 
-        // if(id_system == 0){
-
-
-
-
-        // }
-        // query->bindValue(4, "");
-
         if(!query->exec()){
             msgBox.setText("Ошибка добавления категории " + db.lastError().text());
             msgBox.exec();
@@ -230,7 +206,6 @@ bool DataBase::addCategories(QList<QStringList> list)
             if(!q.exec()){
                 msgBox.setText("Ошибка добавления спортсмена " + db.lastError().text());
                 msgBox.exec();
-                db.close();
                 return false;
             }
         }
@@ -248,7 +223,6 @@ void DataBase::writeData(int id, QString data)
     if(!query->exec()){
         msgBox.setText("Ошибка обновления данных " + db.lastError().text());
         msgBox.exec();
-        db.close();
     }
 }
 
@@ -266,7 +240,6 @@ int DataBase::createCategoryOnMat(int id_cat, int id_sys, int mode, int mat, QSt
     if(!query->exec()){
         msgBox.setText("Ошибка вставки категории на ковер " + db.lastError().text());
         msgBox.exec();
-        db.close();
         return -1;
     }
     return query->lastInsertId().toInt();
@@ -280,13 +253,11 @@ QList<int> DataBase::deleteCategoryFromMat(int id_category_on_mat)
     if(!query->exec(sql)){
         msgBox.setText("Ошибка чтения categories_on_mats " + db.lastError().text());
         msgBox.exec();
-        db.close();
         return QList<int>();
     }
     if(!query->next()){
         msgBox.setText("Ошибка чтения id_category, mode FROM categories_on_mats " + db.lastError().text());
         msgBox.exec();
-        db.close();
         return QList<int>();
     }
     int id_category = query->value(0).toInt();
@@ -295,10 +266,25 @@ QList<int> DataBase::deleteCategoryFromMat(int id_category_on_mat)
     if(!query->exec(sql)){
         msgBox.setText("Ошибка удаления из categories_on_mats " + db.lastError().text());
         msgBox.exec();
-        db.close();
         return QList<int>();
     }
     return {id_category, mode};
+}
+
+void DataBase::updateStatusCategoryOnMat(QList<int> listId, int status)
+{
+    qDebug()<<"updateStatusCategoryOnMat";
+    QMessageBox msgBox;
+    QString sql("UPDATE categories_on_mats SET status = ? WHERE id = ?");
+    foreach(int id, listId){
+        query->prepare(sql);
+        query->bindValue(0, status);
+        query->bindValue(1, id);
+        if(!query->exec()){
+            msgBox.setText("Ошибка обновления статуса " + db.lastError().text());
+            msgBox.exec();
+        }
+    }
 }
 
 QList<std::tuple<int, int, int, int, int, int, QString, QString, QString, QString> > DataBase::getCategoriesOnMats()

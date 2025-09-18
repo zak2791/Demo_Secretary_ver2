@@ -57,6 +57,8 @@ signals:
     void sigRemoveCategoryFromMat(int/*id*/, int/*mat*/);
     void sigCancelSendOnMat(int, int);
     void sigRemovePanel(void);
+    void sigConnectToMat(int);
+
 };
 
 #endif // CONTROLLER_H

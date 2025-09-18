@@ -68,4 +68,28 @@ MatsStatus::MatsStatus(QWidget* parent) : QWidget(parent) {
 
     setLayout(hBox);
 
+    connect(&timerMat1, &QTimer::timeout, this, [this](){led1->turnOnOff(false);});
+    //timerMat1.start(6000);
+
+    connect(&timerMat2, &QTimer::timeout, this, [this](){led2->turnOnOff(false);});
+    //timerMat1.start(6000);
+
+    connect(&timerMat3, &QTimer::timeout, this, [this](){led3->turnOnOff(false);});
+    //timerMat1.start(6000);
+
+}
+
+void MatsStatus::turnOnLedMat1(){
+    led1->turnOnOff(true);
+    timerMat1.start(6000);
+}
+
+void MatsStatus::turnOnLedMat2(){
+    led2->turnOnOff(true);
+    timerMat1.start(6000);
+}
+
+void MatsStatus::turnOnLedMat3(){
+    led3->turnOnOff(true);
+    timerMat1.start(6000);
 }

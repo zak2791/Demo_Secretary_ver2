@@ -1,7 +1,6 @@
 #include "controller.h"
 #include "mainwindow.h"
 #include "qdebug.h"
-#include "jsonconverter.h"
 
 #include "qmessagebox.h"
 #include "system_0.h"
@@ -13,6 +12,7 @@ Controller::Controller(QObject* parent) : QObject(parent) {
     //add = new AddingAthletes;
     base = new DataBase;
     dataController = new DataTransferController(&currentBase, this);
+    connect(dataController, &DataTransferController::sigConnectToMat, this, &Controller::sigConnectToMat);
 
 }
 
@@ -156,10 +156,8 @@ void Controller::addAthletes()
 
 void Controller::sendOnMat(int id, int id_system, int mode , QString category, QString age, QString weight, QString data)
 {
-    //qDebug()<<"sendOnMat!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
     int mat = static_cast<MainWindow*>(p)->getMat();
     int id_onMat = base->createCategoryOnMat(id, id_system, mode, mat, data);
-    //qDebug()<<"id_onMat = "<<id_onMat<<mode;
     CategoryOnMat* cat = new CategoryOnMat(id_onMat, id, id_system, mode, 0, category, age, weight, data);
     connect(cat, &CategoryOnMat::sigRemoveFromMat, this, &Controller::removeCategoryFromMat);
     connect(cat, &CategoryOnMat::sigClick, static_cast<MainWindow*>(p), &MainWindow::clickCategoryOnMat);
@@ -176,18 +174,14 @@ void Controller::sendOnMat(int id, int id_system, int mode , QString category, Q
 
 void Controller::removeCategoryFromMat(int id)
 {
-    QMessageBox msgBox;
-    QList<int> lI = base->deleteCategoryFromMat(id);
-    if(lI.count() == 2)
-        emit sigCancelSendOnMat(lI.at(0), lI.at(1));
-    else{
-        msgBox.setText("Ошибка отмены отправки на ковёр");
-        msgBox.exec();
-    }
+    QMessageBox msgBox;   
     int mat = static_cast<MainWindow*>(p)->getMat();
     if(mat == 0){
         for(int i = 0; i <  lCategoryOnMat1.count(); i++){
             if(lCategoryOnMat1.at(i)->getId() == id){
+                if(lCategoryOnMat1.at(i)->getStatus() != 0)
+                    if(!dataController->removeCategory(mat, id))
+                        return;
                 delete lCategoryOnMat1[i];
                 lCategoryOnMat1.removeAt(i);
                 emit sigRemoveCategoryFromMat(id, mat);
@@ -198,6 +192,9 @@ void Controller::removeCategoryFromMat(int id)
     else if(mat == 1){
         for(int i = 0; i <  lCategoryOnMat2.count(); i++){
             if(lCategoryOnMat2.at(i)->getId() == id){
+                if(lCategoryOnMat1.at(i)->getStatus() != 0)
+                    if(!dataController->removeCategory(mat, id))
+                        return;
                 delete lCategoryOnMat2[i];
                 lCategoryOnMat2.removeAt(i);
                 emit sigRemoveCategoryFromMat(id, mat);
@@ -208,12 +205,22 @@ void Controller::removeCategoryFromMat(int id)
     else{
         for(int i = 0; i <  lCategoryOnMat3.count(); i++){
             if(lCategoryOnMat3.at(i)->getId() == id){
+                if(lCategoryOnMat1.at(i)->getStatus() != 0)
+                    if(!dataController->removeCategory(mat, id))
+                        return;
                 delete lCategoryOnMat3[i];
                 lCategoryOnMat3.removeAt(i);
                 emit sigRemoveCategoryFromMat(id, mat);
                 break;
             }
         }
+    }
+    QList<int> lI = base->deleteCategoryFromMat(id);
+    if(lI.count() == 2)
+        emit sigCancelSendOnMat(lI.at(0), lI.at(1));
+    else{
+        msgBox.setText("Ошибка отмены отправки на ковёр");
+        msgBox.exec();
     }
 }
 
@@ -244,8 +251,21 @@ void Controller::sendDataToMat()
         listData.append({id, data});
     }
     listId += dataController->sendData(3, listData);
-    qDebug()<<listId;
-
+    qDebug()<<listId;//set status and save to basa !!!
+    foreach(auto each, lCategoryOnMat1){
+        if(listId.contains(each->getId()))
+            each->setStatus(1);
+    }
+    qDebug()<<"11111111111111";
+    foreach(auto each, lCategoryOnMat2){
+        if(listId.contains(each->getId()))
+            each->setStatus(1);
+    }
+    foreach(auto each, lCategoryOnMat3){
+        if(listId.contains(each->getId()))
+            each->setStatus(1);
+    }
+    base->updateStatusCategoryOnMat(listId, 1);
 }
 
 CompetitionSystem *Controller::getCategory(int id)

@@ -270,22 +270,21 @@ void System_0_Common::mousePressEvent(QGraphicsSceneMouseEvent* e){
         update();
 
         QJsonObject obj;
-        QJsonArray arrId;
-        QJsonArray arrNames;
-        QJsonArray arrTeams;
-        QJsonArray arrRanges;
+        QJsonArray jArr;
+
         foreach(auto each, lAthletes){
-            arrId.push_back(each.id);
-            arrNames.push_back(each.name);
-            arrTeams.push_back(each.team);
-            arrRanges.push_back(each.range);
+            QJsonObject o;
+            o.insert("Id", each.id);
+            o.insert("Name", each.name);
+            o.insert("Team", each.team);
+            o.insert("Range", each.range);
+
+            jArr.push_back(o);
         }
-        obj.insert("Id", arrId);
-        obj.insert("Name", arrNames);
-        obj.insert("Team", arrTeams);
-        obj.insert("Range", arrRanges);
-        QJsonDocument doc(obj);
+
+        QJsonDocument doc(jArr);
         QString strJson(doc.toJson(QJsonDocument::Compact));
+        qDebug()<<"strJson"<<strJson;
         emit sigOnMat(0,        //режим - общий круг
                       strJson
                       );

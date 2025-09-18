@@ -1,6 +1,7 @@
 #ifndef CATEGORYONMAT_H
 #define CATEGORYONMAT_H
 
+#include "ledwidget.h"
 #include "qlabel.h"
 #include "qwidget.h"
 
@@ -10,6 +11,8 @@ class CategoryOnMat : public QFrame
 public:
     CategoryOnMat(int, int, int, int, int, QString, QString, QString, QString, QWidget* parent = nullptr);
     int getId(void){return id;}
+    int getStatus(void){return status;}
+    void setStatus(int);
     QString getDataToSend(void);
 
 private:
@@ -26,6 +29,9 @@ private:
     QLabel* lblWeight;
     QLabel* lblInfo;
     QString data;
+    LEDWidget* LedDeliveredOnmat;
+    LEDWidget* LedInWork;
+    LEDWidget* LedChangeRead;
 
     virtual void mousePressEvent(QMouseEvent*);
 

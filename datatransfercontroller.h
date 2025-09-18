@@ -12,6 +12,7 @@ public:
     DataTransferController(QString*, QObject* parent = nullptr);
     void changeConnection(void);
     QList<int> sendData(int, QList<std::tuple<int, QString>>);
+    bool removeCategory(int, int);
 
 private:
 
@@ -32,6 +33,9 @@ private:
 
     QByteArray addCheckSum(QString);
     QString controlCheckSum(QByteArray);
+
+signals:
+    void sigConnectToMat(int);
 
 };
 

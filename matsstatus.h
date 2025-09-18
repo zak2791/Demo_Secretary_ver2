@@ -3,6 +3,7 @@
 
 #include "ledwidget.h"
 #include "qlabel.h"
+#include "qtimer.h"
 #include <QWidget>
 
 class MatsStatus : public QWidget
@@ -10,6 +11,10 @@ class MatsStatus : public QWidget
     Q_OBJECT
 public:
     MatsStatus(QWidget* parent = nullptr);
+
+    void turnOnLedMat1(void);
+    void turnOnLedMat2(void);
+    void turnOnLedMat3(void);
 
 private:
     QPixmap pixClose;
@@ -32,6 +37,10 @@ private:
     LEDWidget* led1;
     LEDWidget* led2;
     LEDWidget* led3;
+
+    QTimer timerMat1;
+    QTimer timerMat2;
+    QTimer timerMat3;
 
 };
 

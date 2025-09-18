@@ -36,6 +36,7 @@ public:
     bool addCategories(QList<QStringList>);
     int createCategoryOnMat(int, int, int, int/*mat*/, QString);
     QList<int> deleteCategoryFromMat(int);
+    void updateStatusCategoryOnMat(QList<int>, int);
 
 public slots:
     void writeData(int,                         //id категории

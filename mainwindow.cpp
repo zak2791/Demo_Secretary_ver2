@@ -84,6 +84,15 @@ MainWindow::MainWindow(QWidget *parent)
             controller->changeConnection();
     });
 
+    connect(controller, &Controller::sigConnectToMat, this, [this](int mat){
+        if(mat == 1)
+            mStatus->turnOnLedMat1();
+        else if(mat == 2)
+            mStatus->turnOnLedMat2();
+        else
+            mStatus->turnOnLedMat1();
+    });
+
 }
 
 MainWindow::~MainWindow()
