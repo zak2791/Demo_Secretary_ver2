@@ -3,7 +3,7 @@
 #include "qtimer.h"
 
 #include <QNetworkDatagram>
-
+#include <QMessageBox>
 
 DataTransferController::DataTransferController(QString * title, QObject* parent):QObject(parent){
 
@@ -15,8 +15,9 @@ DataTransferController::DataTransferController(QString * title, QObject* parent)
 
     ipLocal = settings.value("ipLocal", "").toString();
 
-    tcpPort = settings.value("tcpPort", 5001).toInt();
-    udpPort = settings.value("udpPort", 5000).toInt();
+    portIn = settings.value("portIn", 5000).toInt();
+    portOut = settings.value("portOut", 5000).toInt();
+    portConn = settings.value("portConn", 5002).toInt();
 
     settings.endGroup();
 
@@ -70,10 +71,19 @@ DataTransferController::DataTransferController(QString * title, QObject* parent)
         QString title = (*currentCompetitionTitle).first(len - 3);
         int index = ipLocal.lastIndexOf(".");
         QString ipAddress = ipLocal.first(index) + ".255";
-        QNetworkDatagram datagram(title.toUtf8(), QHostAddress(ipAddress), udpPort);
+        QNetworkDatagram datagram(title.toUtf8(), QHostAddress(ipAddress), portConn);
         udpSocket->writeDatagram(datagram);
     });
     timer1->start(5000);
+
+    tcpServer = new QTcpServer(this);
+    connect(tcpServer, &QTcpServer::newConnection, this, &DataTransferController::slotNewConnection);
+    qDebug()<<portIn;
+    if (!tcpServer->listen(QHostAddress::Any, portIn)) {
+        QMessageBox::critical(nullptr, tr("Tcp server"),
+                              tr("Unable to start the server: %1.")
+                                  .arg(tcpServer->errorString()));
+    }
 
 }
 
@@ -85,10 +95,18 @@ void DataTransferController::changeConnection()
 
     ipLocal = settings.value("ipLocal", "").toString();
 
-    tcpPort = settings.value("tcpPort", 5001).toInt();
-    udpPort = settings.value("udpPort", 5002).toInt();
+    portIn = settings.value("portIn", 5000).toInt();
+    portOut = settings.value("portOut", 5001).toInt();
+    portConn = settings.value("portConn", 5002).toInt();
 
     settings.endGroup();
+
+    if(tcpServer->isListening()) tcpServer->close();
+    if (!tcpServer->listen(QHostAddress::Any, portIn)) {
+        QMessageBox::critical(nullptr, tr("Tcp server"),
+                              tr("Unable to start the server: %1.")
+                                  .arg(tcpServer->errorString()));
+    }
 }
 
 
@@ -102,7 +120,7 @@ QList<int> DataTransferController::sendData(int mat, QList<std::tuple<int, QStri
     else address = ip3;
 
     QList<int> listId;  //список id успешно отправленных категорий
-    tcpSocket->connectToHost(address, tcpPort);
+    tcpSocket->connectToHost(address, portOut);
     if(!tcpSocket->waitForConnected(1000))
         return listId;
     foreach(auto each, listIdAndData){
@@ -124,25 +142,30 @@ QList<int> DataTransferController::sendData(int mat, QList<std::tuple<int, QStri
 bool DataTransferController::removeCategory(int mat, int id)
 {
     QHostAddress address;
-    if(mat ==1) address = ip1;
-    else if (mat == 2) address = ip2;
+    if(mat == 0) address = ip1;
+    else if (mat == 1) address = ip2;
     else address = ip3;
 
+    qDebug()<<address<<ip1;
+
     QTcpSocket sock;
-    sock.connectToHost(address, tcpPort);
+    sock.connectToHost(address, portOut);
     if(!sock.waitForConnected(1000))
         return false;
     QString data = "Remove" + QString::number(id);
-    sock.write(data.toUtf8());
+    qDebug()<<data;
+    sock.write(addCheckSum(data));
     if(!sock.waitForReadyRead(1000)){
         sock.close();
         return false;
     }
+
     QByteArray ba = sock.readAll();
+    qDebug()<<"ba = "<<ba;
     sock.close();
     if(!ba.contains("Ok"))
         return false;
-    return false;
+    return true;
 }
 
 QByteArray DataTransferController::addCheckSum(QString data)
@@ -169,5 +192,37 @@ QString DataTransferController::controlCheckSum(QByteArray _ba)
     ba = ba.first(ba.length() - 4);
     if(qChecksum(ba) == check) return ba;
     else return "";
+}
+
+void DataTransferController::slotNewConnection()
+{
+    //tcpServer->pauseAccepting();
+    QTcpSocket* socket = tcpServer->nextPendingConnection();
+
+    //listClientSockets.insert(socket->socketDescriptor(), socket);
+    qDebug()<<socket;
+    connect(socket, &QAbstractSocket::disconnected, socket, &QObject::deleteLater);
+    //connect(clientConnection, &QAbstractSocket::disconnected, tcpServer, &QTcpServer::resumeAccepting);
+    connect(socket, &QAbstractSocket::readyRead, this, &DataTransferController::slotReadyRead);
+
+}
+
+void DataTransferController::slotReadyRead()
+{
+    QTcpSocket* socket = static_cast<QTcpSocket*>(sender());
+    QByteArray ba = socket->readAll();
+    qDebug()<<"slotReadyRead"<<ba;//<<listClintSockets;
+
+
+}
+
+void DataTransferController::slotDisconnect()
+{
+    QTcpSocket* socket = static_cast<QTcpSocket*>(sender());
+    int desc = socket->socketDescriptor();
+    qDebug()<<desc;
+    socket->deleteLater();
+    listClientSockets.remove(desc);
+    qDebug()<<listClientSockets;
 }
 

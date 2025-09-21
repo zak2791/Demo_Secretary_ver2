@@ -26,9 +26,9 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
 
     ipLocal = settings->value("ipLocal", "").toString();
 
-    tcpPort = settings->value("tcpPort", 5001).toInt();
-
-    udpPort = settings->value("udpPort", 5000).toInt();
+    portIn = settings->value("portIn", 5000).toInt();
+    portOut = settings->value("portOut", 5001).toInt();
+    portConn = settings->value("portConn", 5002).toInt();
 
 
     settings->endGroup();
@@ -47,16 +47,16 @@ ConnectionDialog::ConnectionDialog(QWidget *parent)
     // ui->leMat3->setText(ip3);
 
 
-    ui->sbTcp->setValue(tcpPort);
-    ui->sbUdp->setValue(udpPort);
+    ui->sbIn->setValue(portIn);
+    ui->sbOut->setValue(portOut);
 
     // connect(ui->leMat1, &QLineEdit::editingFinished, this, [this](){ip1 = ui->leMat1->text();});
     // connect(ui->leMat2, &QLineEdit::editingFinished, this, [this](){ip2 = ui->leMat2->text();});
     // connect(ui->leMat3, &QLineEdit::editingFinished, this, [this](){ip3 = ui->leMat3->text();});
 
-    connect(ui->sbTcp, &QSpinBox::valueChanged, this, [this](int value){tcpPort = value;});
-    connect(ui->sbUdp, &QSpinBox::valueChanged, this, [this](int value){udpPort = value;});
-
+    connect(ui->sbIn, &QSpinBox::valueChanged, this, [this](int value){portIn = value;});
+    connect(ui->sbOut, &QSpinBox::valueChanged, this, [this](int value){portOut = value;});
+    connect(ui->sbConn, &QSpinBox::valueChanged, this, [this](int value){portConn = value;});
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ConnectionDialog::slotAccept);
 
@@ -74,8 +74,9 @@ void ConnectionDialog::slotAccept()
 
     settings->setValue("ipLocal", ipLocal);
 
-    settings->setValue("udpPort", udpPort);
-    settings->setValue("tcpPort", tcpPort);
+    settings->setValue("portIn", portIn);
+    settings->setValue("portOut", portOut);
+    settings->setValue("portConn", portConn);
 
     settings->endGroup();
     accept();

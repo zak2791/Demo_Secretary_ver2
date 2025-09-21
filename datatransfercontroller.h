@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QTcpServer>
 #include <QUdpSocket>
 
 class DataTransferController : public QObject
@@ -23,16 +24,23 @@ private:
     QHostAddress ip2;
     QHostAddress ip3;
 
-    int udpPort;
-
-    int tcpPort;
+    int portConn;       //порт контроля подключения к коврам
+    int portIn;
+    int portOut;
 
     QTcpSocket* tcpSocket;
+    QTcpServer* tcpServer;
+    QMap<int, QTcpSocket*> listClientSockets;
 
     QUdpSocket* udpSocket;
 
     QByteArray addCheckSum(QString);
     QString controlCheckSum(QByteArray);
+
+private slots:
+    void slotNewConnection(void);
+    void slotReadyRead(void);
+    void slotDisconnect(void);
 
 signals:
     void sigConnectToMat(int);
